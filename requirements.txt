@@ -1,0 +1,8 @@
+gunicorn
+uvicorn
+uvicorn[standard]
+fastapi~=0.78.0
+graphene
+requests
+python-dotenv
+firebase-admin
