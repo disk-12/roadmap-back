@@ -1,5 +1,9 @@
 # roadmap-back
 
+Roadmap API Server (Backend)
+
+## Architecture
+
 **Architecture**
 
 ![](fig/infra_architecture.drawio.svg)
@@ -8,9 +12,41 @@
 
 ![](fig/ci_cd.drawio.svg)
 
-Roadmap API Server (Backend)
+**Architecture-code**
+
+- クリーンアーキテクチャを用いる
+- 以下の順で開発すると良い (推奨)
+    1. モデルの作成
+    2. レポジトリの作成
+    3. サービスの作成
+    4. ルータの作成
+
+```shell
+app
+├── config.py # .env ファイルの読み出し
+├── main.py # アプリの起動, ミドルウェアの定義
+├── model # モデル
+├── repository # DB などへの永続化を隠蔽
+│   ├── cooud_firestore # 継承先
+│   │   └── task.py 
+│   └── task.py # 継承元
+├── router # エンドポイントの切り分け
+│   └── task.py
+└── service #　ビジネスロジックを定義
+    └── task.py
+```
 
 ## Development
+
+### 前提
+
+- Firebase Admin SDK の秘密鍵が必要
+- Docker
+- docker-compose
+- make
+- エディタ
+
+### 初期化
 
 1. `app/` に `serviceAccountKey.json` を配置
 
@@ -31,29 +67,76 @@ make up
 ```
 
 4. アクセス
-  * api
-    * `http://localhost:8080`
-  * docs
-    * `http://localhost:8080/docs`
-  * redoc
-    * `http://localhost:8080/redoc`
-  * openapi.json
-    * `http://localhost:8080/openapi.json`
-## Command List
+
+* api
+    * [http://localhost:8080](http://localhost:8080)
+* docs
+    * [http://localhost:8080/docs](http://localhost:8080/docs)
+* redoc
+    * [http://localhost:8080/redoc](http://localhost:8080/redoc)
+* openapi.json
+    * [http://localhost:8080/openapi.json](http://localhost:8080/openapi.json)
+
+5. `app/`以下のコードを編集すると自動で反映されます（ページリロードは必須）
+
+### 終了時
+
+1. コンテナをダウンさせる
 
 ```shell
-# docker-compose 起動
-make up
-
-# docker-compose 再ビルド
-make reup
-
-# docker-compose 停止
 make down
+```
 
-# docker-compose ログを表示
+### 再開時
+
+1. コンテナを起動
+
+```shell
+make up
+```
+
+## Command List
+
+### docker-compose 関連
+
+**プロセス確認**
+
+```shell
+make ps
+````
+
+**起動**
+
+```shell
+make up
+````
+
+**再起動**
+
+```shell
+make re
+````
+
+**再ビルド**
+
+```shell
+make reup
+```
+
+**停止**
+
+```shell
+make down
+````
+
+**ログを表示 (Cancel Ctrl+C)**
+
+```shell
 make logs
+````
 
-# docker-compose api のコンテナに入る
+**コンテナに入る**
+
+```shell
 make api
 ```

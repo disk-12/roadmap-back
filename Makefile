@@ -1,4 +1,4 @@
-.PHONY: ps up restart reup down logs api
+.PHONY: ps up re reup down logs api
 
 ps:
 	docker-compose ps
@@ -6,7 +6,7 @@ ps:
 up:
 	docker-compose up -d
 
-restart:
+re:
 	docker-compose restart
 
 reup:
