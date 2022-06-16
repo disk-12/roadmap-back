@@ -1,4 +1,6 @@
 import abc
+import datetime
+from typing import Union
 
 from pydantic import BaseModel
 
@@ -14,6 +16,12 @@ class CreateUser(BaseModel):
     name: str
 
 
+class UpdateUser(BaseModel):
+    id: str
+    name: Union[str, None] = None
+    last_login_at: Union[datetime.datetime, None] = None
+
+
 class IUserRepository(abc.ABC):
     @abc.abstractmethod
     def get_by_id(self, arg: FindUser) -> [User, None]:
@@ -21,4 +29,8 @@ class IUserRepository(abc.ABC):
 
     @abc.abstractmethod
     def create(self, arg: CreateUser) -> bool:
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def update(self, arg: UpdateUser) -> bool:
         raise NotImplementedError()
