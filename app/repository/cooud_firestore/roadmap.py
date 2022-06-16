@@ -1,11 +1,9 @@
 import datetime
 from typing import Any
 
-from app.model.edge import EdgeKey, Edge
 from app.model.roadmap import RoadmapKey, Roadmap
-from app.model.vertex import VertexKey
 from app.repository.cooud_firestore.model import ModelName
-from app.repository.roadmap import IRoadmapRepository, CreateRoadmap
+from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap
 
 
 class RoadmapRepository(IRoadmapRepository):
@@ -15,7 +13,7 @@ class RoadmapRepository(IRoadmapRepository):
     def __init__(self, db):
         self.db = db
 
-    def create(self, arg: CreateRoadmap) -> bool:
+    def create(self, arg: CreateRoadmap) -> [str, None]:
         doc_ref = self.db.collection(ModelName.roadmaps).document()
         roadmap = doc_ref.set({
             RoadmapKey.id: doc_ref.id,
@@ -28,29 +26,9 @@ class RoadmapRepository(IRoadmapRepository):
         })
 
         if roadmap is None:
-            return False
+            return None
 
-        batch = self.db.batch()
-        graph_ref = self.db.collection(ModelName.graphs).document(doc_ref.id)
-        for edge in arg.edges:
-            edge_ref = graph_ref.collection(ModelName.edges).document(edge.id)
-            batch.set(edge_ref, {
-                EdgeKey.id: edge.id,
-                EdgeKey.source_id: edge.source_id,
-                EdgeKey.target_id: edge.target_id,
-            })
-
-        for vertex in arg.vertexes:
-            vertex_ref = graph_ref.collection(ModelName.vertexes).document(vertex.id)
-            batch.set(vertex_ref, {
-                VertexKey.id: vertex.id,
-                VertexKey.x_coordinate: vertex.x_coordinate,
-                VertexKey.y_coordinate: vertex.y_coordinate,
-            })
-
-        success = batch.commit()
-
-        return success is not None
+        return doc_ref.id
 
     def get_by_id(self, roadmap_id: str) -> Roadmap:
         doc_ref = self.db.collection(ModelName.roadmaps).document(roadmap_id)
@@ -62,3 +40,15 @@ class RoadmapRepository(IRoadmapRepository):
             RoadmapKey.edges: [],
             RoadmapKey.vertexes: [],
         })
+
+    def update(self, arg: UpdateRoadmap) -> bool:
+        doc_ref = self.db.collection(ModelName.roadmaps).document(arg.id)
+
+        # None:
+        # dict を作成し None の項目があるなら削除
+        # None の項目で上書きしてしまうとデータベース上で Null になってしまう
+        new_dic = {k: v for k, v in arg.dict().items() if v is not None}
+
+        success = doc_ref.update(new_dic)
+
+        return success is not None

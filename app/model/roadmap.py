@@ -1,7 +1,11 @@
 import datetime
 from enum import Enum
+from typing import List
 
 from pydantic import BaseModel
+
+from app.model.edge import Edge
+from app.model.vertex import Vertex
 
 
 class RoadmapKey(str, Enum):
@@ -24,13 +28,15 @@ class Roadmap(BaseModel):
     favorited: bool
     favorite_count: int
     tags: list
-    edges: list
-    vertexes: list
+    edges: List[Edge]
+    vertexes: List[Vertex]
     created_at: datetime.datetime
     updated_at: datetime.datetime
 
     @staticmethod
     def from_dict(source):
+        vertexes: List[Vertex] = source[RoadmapKey.vertexes]
+
         return Roadmap(
             id=source[RoadmapKey.id],
             author_id=source[RoadmapKey.author_id],
@@ -39,7 +45,7 @@ class Roadmap(BaseModel):
             favorite_count=source[RoadmapKey.favorite_count],
             tags=source[RoadmapKey.tags],
             edges=source[RoadmapKey.edges],
-            vertexes=source[RoadmapKey.vertexes],
+            vertexes=vertexes,
             created_at=source[RoadmapKey.created_at],
             updated_at=source[RoadmapKey.updated_at]
         )

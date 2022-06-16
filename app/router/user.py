@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from pydantic import BaseModel
 
 from app.main import db, taskService, user_service
@@ -25,7 +25,7 @@ async def show_user(uid=Depends(get_user_id)):
     return user
 
 
-@router.post('/user')
+@router.post('/user', status_code=status.HTTP_201_CREATED, response_class=Response)
 async def create_user(req: CreateUserRequest, uid=Depends(get_user_id)):
     success = user_service.create_user(CreateUserCommand(id=uid, name=req.name))
 

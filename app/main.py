@@ -8,6 +8,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import Settings
+from .repository.cooud_firestore.graph import GraphRepository
 from .repository.cooud_firestore.roadmap import RoadmapRepository
 from .repository.cooud_firestore.task import TaskRepository
 from .repository.cooud_firestore.user import UserRepository
@@ -65,7 +66,8 @@ taskService = TaskService(taskRepo=taskRepo)
 user_repo = UserRepository(db=db)
 user_service = UserService(user_repo=user_repo)
 roadmap_repo = RoadmapRepository(db=db)
-roadmap_service = RoadmapService(roadmap_repo=roadmap_repo)
+graph_repo = GraphRepository(db=db)
+roadmap_service = RoadmapService(roadmap_repo=roadmap_repo, graph_repo=graph_repo)
 
 #
 # FastAPI EndPoint Definition ->
