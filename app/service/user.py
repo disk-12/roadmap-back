@@ -22,5 +22,5 @@ class UserService:
     def get_me(self, command: GetMeCommand) -> [User, None]:
         return self.userRepo.get_by_id(arg=FindUser(id=command.id))
 
-    def create_user(self, command: CreateUserCommand):
+    def create_user(self, command: CreateUserCommand) -> bool:
         return self.userRepo.create(arg=CreateUser(id=command.id, name=command.name))

@@ -27,4 +27,7 @@ async def show_user(uid=Depends(get_user_id)):
 
 @router.post('/user')
 async def create_user(req: CreateUserRequest, uid=Depends(get_user_id)):
-    user_service.create_user(CreateUserCommand(id=uid, name=req.name))
+    success = user_service.create_user(CreateUserCommand(id=uid, name=req.name))
+
+    if not success:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT)

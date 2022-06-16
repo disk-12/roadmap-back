@@ -22,7 +22,10 @@ class UserRepository(IUserRepository):
         return User.from_dict(docs.to_dict())
 
     def create(self, arg: CreateUser) -> bool:
-        # TODO(k-shir0): 重複チェック
+        # ユーザ重複チェック
+        user = self.get_by_id(FindUser(id=arg.id))
+        if user is not None:
+            return False
 
         doc_ref = self.db.collection(ModelName.users).document(arg.id)
         success = doc_ref.set({
