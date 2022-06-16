@@ -9,12 +9,13 @@ from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import Settings
 from .repository.cooud_firestore.task import TaskRepository
+from .repository.cooud_firestore.user import UserRepository
 from .service.task import TaskService
-
 
 #
 # env 読み出し ->
 #
+from .service.user import UserService
 
 
 @lru_cache()
@@ -59,15 +60,18 @@ app.add_middleware(
 
 taskRepo = TaskRepository(db=db)
 taskService = TaskService(taskRepo=taskRepo)
+user_repo = UserRepository(db=db)
+user_service = UserService(user_repo=user_repo)
 
 #
 # FastAPI EndPoint Definition ->
 #
 
 # インポートを上に移動すると動作しないので注意
-from .router import task
+from .router import task, user
 
 app.include_router(task.router)
+app.include_router(user.router)
 
 
 @app.get('/')
