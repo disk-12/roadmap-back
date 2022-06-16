@@ -5,7 +5,8 @@ from firebase_admin import auth
 
 # Bearer ヘッダーを検証し Firebase User を返
 def get_user_id(res: Response,
-                cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))) -> dict:
+                cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))
+                ) -> dict:
     if cred is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
