@@ -2,7 +2,7 @@ import datetime
 from typing import Any
 
 from app.model.edge import EdgeKey, Edge
-from app.model.roadmap import RoadmapKey
+from app.model.roadmap import RoadmapKey, Roadmap
 from app.model.vertex import VertexKey
 from app.repository.cooud_firestore.model import ModelName
 from app.repository.roadmap import IRoadmapRepository, CreateRoadmap
@@ -21,6 +21,8 @@ class RoadmapRepository(IRoadmapRepository):
             RoadmapKey.id: doc_ref.id,
             RoadmapKey.author_id: arg.author_id,
             RoadmapKey.title: arg.title,
+            RoadmapKey.tags: arg.tags,
+            RoadmapKey.favorite_count: 0,
             RoadmapKey.created_at: datetime.datetime.now(),
             RoadmapKey.updated_at: datetime.datetime.now()
         })
@@ -49,3 +51,14 @@ class RoadmapRepository(IRoadmapRepository):
         success = batch.commit()
 
         return success is not None
+
+    def get_by_id(self, roadmap_id: str) -> Roadmap:
+        doc_ref = self.db.collection(ModelName.roadmaps).document(roadmap_id)
+
+        return Roadmap.from_dict({
+            **doc_ref.get().to_dict(),
+            # TODO(k-shir0): 別で取得して追加
+            RoadmapKey.favorited: False,
+            RoadmapKey.edges: [],
+            RoadmapKey.vertexes: [],
+        })

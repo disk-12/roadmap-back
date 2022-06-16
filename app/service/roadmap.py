@@ -25,3 +25,6 @@ class RoadmapService:
             edges=command.edges,
             vertexes=command.vertexes,
         ))
+
+    def get_by_id(self, roadmap_id: str):
+        return self.roadmap_repo.get_by_id(roadmap_id)

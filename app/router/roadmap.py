@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from app.main import roadmap_service
 from app.middleware.auth import get_user_id
 from app.model.edge import Edge
+from app.model.roadmap import Roadmap
 from app.model.vertex import Vertex
 from app.service.roadmap import CreateRoadmapCommand
 
@@ -32,3 +33,8 @@ async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(get_user_id)):
         edges=req.edges,
         vertexes=req.vertexes,
     ))
+
+
+@router.get('/roadmaps/{roadmap_id}', response_model=Roadmap)
+async def show_roadmap(roadmap_id: str):
+    return roadmap_service.get_by_id(roadmap_id)
