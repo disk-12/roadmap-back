@@ -8,8 +8,10 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import Settings
+from .repository.cooud_firestore.roadmap import RoadmapRepository
 from .repository.cooud_firestore.task import TaskRepository
 from .repository.cooud_firestore.user import UserRepository
+from .service.roadmap import RoadmapService
 from .service.task import TaskService
 
 #
@@ -62,16 +64,19 @@ taskRepo = TaskRepository(db=db)
 taskService = TaskService(taskRepo=taskRepo)
 user_repo = UserRepository(db=db)
 user_service = UserService(user_repo=user_repo)
+roadmap_repo = RoadmapRepository(db=db)
+roadmap_service = RoadmapService(roadmap_repo=roadmap_repo)
 
 #
 # FastAPI EndPoint Definition ->
 #
 
 # インポートを上に移動すると動作しないので注意
-from .router import task, user
+from .router import task, user, roadmap
 
 app.include_router(task.router)
 app.include_router(user.router)
+app.include_router(roadmap.router)
 
 
 @app.get('/')
