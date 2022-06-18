@@ -7,7 +7,7 @@ from app.model.roadmap import RoadmapKey, Roadmap
 from app.model.vertex import Vertex
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
-from app.repository.user_favorite import IUserFavoriteRepository
+from app.repository.user_favorite import IUserFavoriteRepository, FindByUserId
 
 
 class CreateRoadmapCommand(BaseModel):
@@ -29,6 +29,10 @@ class UpdateRoadmapCommand(BaseModel):
     tags: Union[list, None]
     edges: Union[List[Edge], None]
     vertexes: Union[List[Vertex], None]
+
+
+class GetRoadmapsByNewestCommand(BaseModel):
+    user_id: Union[str, None]
 
 
 class RoadmapService:
@@ -62,10 +66,17 @@ class RoadmapService:
     def get_by_id(self, command: GetRoadmapById):
         roadmap = self.roadmap_repo.get_by_id(command.roadmap_id)
         graph = self.graph_repo.get_by_id(command.roadmap_id)
-        # TODO(k-shir0): ユーザから Favorite を取得し上書きする処理
+        favorite = False
+
+        # ユーザから Favorite を取得し上書きする処理
+        if command.user_id is not None:
+            user_favorite = self.user_favorites_repo.get_by_user_id(FindByUserId(id=command.user_id))
+            if user_favorite is not None:
+                favorite = command.roadmap_id in user_favorite.roadmap_ids
 
         roadmap_graph = Roadmap.from_dict({
             **roadmap.dict(),
+            RoadmapKey.favorited: favorite,
             RoadmapKey.vertexes: graph.vertexes,
             RoadmapKey.edges: graph.edges,
         })
@@ -78,5 +89,23 @@ class RoadmapService:
 
         return roadmap_result is not None and graph_result is not None
 
-    def get_roadmaps_by_newest(self):
-        return self.roadmap_repo.get_all(GetAllRoadmap(sorted_by=RoadmapKey.created_at))
+    def get_roadmaps_by_newest(self, command: GetRoadmapsByNewestCommand):
+        roadmaps = self.roadmap_repo.get_all(GetAllRoadmap(sorted_by=RoadmapKey.created_at))
+
+        # ユーザお気に入り一覧を取得
+        favorite_roadmap_ids: List[str] = []
+        if command.user_id is not None:
+            user_favorite = self.user_favorites_repo.get_by_user_id(FindByUserId(id=command.user_id))
+            if user_favorite is not None:
+                favorite_roadmap_ids = user_favorite.roadmap_ids
+
+        new_roadmaps: List[Roadmap] = []
+        for roadmap in roadmaps:
+            favorite = roadmap.id in favorite_roadmap_ids
+
+            new_roadmaps.append(Roadmap.from_dict({
+                **roadmap.dict(),
+                RoadmapKey.favorited: favorite,
+            }))
+
+        return new_roadmaps

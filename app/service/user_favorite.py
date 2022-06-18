@@ -24,7 +24,7 @@ class UserFavoriteService:
 
     def add_favorite(self, command: AddFavoriteCommand) -> bool:
         exist = self.exist_favorite(user_id=command.user_id, roadmap_id=command.roadmap_id)
-        if not exist:
+        if exist:
             return False
 
         result = self.user_favorite_repo.add_roadmap_id(AddRoadmapId(
