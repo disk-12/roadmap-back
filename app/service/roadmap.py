@@ -6,7 +6,7 @@ from app.model.edge import Edge
 from app.model.roadmap import RoadmapKey, Roadmap
 from app.model.vertex import Vertex
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
-from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap
+from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
 
 
 class CreateRoadmapCommand(BaseModel):
@@ -67,3 +67,6 @@ class RoadmapService:
         graph_result = self.graph_repo.update(arg=UpdateGraph(**command.dict()))
 
         return roadmap_result is not None and graph_result is not None
+
+    def get_roadmaps_by_newest(self):
+        return self.roadmap_repo.get_all(GetAllRoadmap(sorted_by=RoadmapKey.created_at))

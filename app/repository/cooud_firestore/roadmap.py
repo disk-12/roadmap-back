@@ -1,9 +1,9 @@
 import datetime
-from typing import Any
+from typing import Any, List
 
 from app.model.roadmap import RoadmapKey, Roadmap
 from app.repository.cooud_firestore.model import ModelName
-from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap
+from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
 
 
 class RoadmapRepository(IRoadmapRepository):
@@ -30,16 +30,24 @@ class RoadmapRepository(IRoadmapRepository):
 
         return doc_ref.id
 
+    def get_all(self, arg: GetAllRoadmap) -> List[Roadmap]:
+        query = self.db.collection(ModelName.roadmaps)
+
+        if arg.sorted_by is not None:
+            query = query.order_by(arg.sorted_by.value)
+
+        docs = query.get()
+
+        ary = []
+        for doc in docs:
+            ary.append(self.dict_to_roadmap(doc.to_dict()))
+
+        return ary
+
     def get_by_id(self, roadmap_id: str) -> Roadmap:
         doc_ref = self.db.collection(ModelName.roadmaps).document(roadmap_id)
 
-        return Roadmap.from_dict({
-            **doc_ref.get().to_dict(),
-            # TODO(k-shir0): 別で取得して追加
-            RoadmapKey.favorited: False,
-            RoadmapKey.edges: [],
-            RoadmapKey.vertexes: [],
-        })
+        return self.dict_to_roadmap(doc_ref.get().to_dict())
 
     def update(self, arg: UpdateRoadmap) -> bool:
         doc_ref = self.db.collection(ModelName.roadmaps).document(arg.id)
@@ -52,3 +60,12 @@ class RoadmapRepository(IRoadmapRepository):
         success = doc_ref.update(new_dic)
 
         return success is not None
+
+    @staticmethod
+    def dict_to_roadmap(roadmap_dict: dict) -> Roadmap:
+        return Roadmap.from_dict({
+            **roadmap_dict,
+            RoadmapKey.favorited: False,
+            RoadmapKey.edges: [],
+            RoadmapKey.vertexes: [],
+        })

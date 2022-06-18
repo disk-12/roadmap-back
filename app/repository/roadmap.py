@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import List, Union
 
 from app.model.edge import Edge
-from app.model.roadmap import Roadmap
+from app.model.roadmap import Roadmap, RoadmapKey
 from app.model.vertex import Vertex
 
 
@@ -16,6 +16,10 @@ class CreateRoadmap(BaseModel):
     vertexes: List[Vertex]
 
 
+class GetAllRoadmap(BaseModel):
+    sorted_by: Union[RoadmapKey, None]
+
+
 class UpdateRoadmap(BaseModel):
     id: str
     title: Union[str, None]
@@ -25,6 +29,10 @@ class UpdateRoadmap(BaseModel):
 class IRoadmapRepository(abc.ABC):
     @abc.abstractmethod
     def create(self, arg: CreateRoadmap) -> Union[str, None]:
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def get_all(self, arg: GetAllRoadmap) -> List[Roadmap]:
         raise NotImplementedError()
 
     @abc.abstractmethod
