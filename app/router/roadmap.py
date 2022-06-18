@@ -53,3 +53,8 @@ async def patch_roadmap(roadmap_id: str, req: UpdateRoadmapRequest, _=Depends(ge
         id=roadmap_id,
         **req.dict()
     ))
+
+
+@router.get('/home_timeline', response_model=List[Roadmap])
+async def get_home_timeline():
+    return roadmap_service.get_roadmaps_by_newest()
