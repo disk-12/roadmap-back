@@ -27,6 +27,10 @@ class UserService:
         # 最終ログイン日付を更新
         if user is not None:
             self.userRepo.update(UpdateUser(id=command.id, last_login_at=datetime.datetime.now()))
+        else:
+            return None
+
+        return user
 
     def create_user(self, command: CreateUserCommand) -> bool:
         return self.userRepo.create(arg=CreateUser(id=command.id, name=command.name))
