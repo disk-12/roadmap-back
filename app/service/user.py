@@ -15,6 +15,10 @@ class CreateUserCommand(BaseModel):
     name: str
 
 
+class GetUserByIdCommand(BaseModel):
+    id: str
+
+
 class UserService:
     userRepo: IUserRepository
 
@@ -31,6 +35,9 @@ class UserService:
             return None
 
         return user
+
+    def get_user_by_id(self, command: GetUserByIdCommand):
+        return self.userRepo.get_by_id(arg=FindUser(id=command.id))
 
     def create_user(self, command: CreateUserCommand) -> bool:
         return self.userRepo.create(arg=CreateUser(id=command.id, name=command.name))
