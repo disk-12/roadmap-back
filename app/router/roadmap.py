@@ -8,7 +8,7 @@ from app.middleware.auth import get_user_id
 from app.model.edge import Edge
 from app.model.roadmap import Roadmap
 from app.model.vertex import Vertex
-from app.service.roadmap import CreateRoadmapCommand, UpdateRoadmapCommand
+from app.service.roadmap import CreateRoadmapCommand, UpdateRoadmapCommand, GetRoadmapById
 from app.service.user_favorite import AddFavoriteCommand, DeleteFavoriteCommand
 
 router = APIRouter()
@@ -45,7 +45,7 @@ async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(get_user_id)):
 
 @router.get('/roadmaps/{roadmap_id}', response_model=Roadmap)
 async def show_roadmap(roadmap_id: str):
-    return roadmap_service.get_by_id(roadmap_id)
+    return roadmap_service.get_by_id(GetRoadmapById(roadmap_id=roadmap_id))
 
 
 @router.patch('/roadmaps/{roadmap_id}', status_code=status.HTTP_204_NO_CONTENT, response_class=Response)

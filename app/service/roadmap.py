@@ -7,6 +7,7 @@ from app.model.roadmap import RoadmapKey, Roadmap
 from app.model.vertex import Vertex
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
+from app.repository.user_favorite import IUserFavoriteRepository
 
 
 class CreateRoadmapCommand(BaseModel):
@@ -15,6 +16,11 @@ class CreateRoadmapCommand(BaseModel):
     tags: list
     edges: list
     vertexes: list
+
+
+class GetRoadmapById(BaseModel):
+    user_id: Union[str, None] = None
+    roadmap_id: str
 
 
 class UpdateRoadmapCommand(BaseModel):
@@ -28,10 +34,13 @@ class UpdateRoadmapCommand(BaseModel):
 class RoadmapService:
     roadmap_repo: IRoadmapRepository
     graph_repo: IGraphRepository
+    user_favorites_repo: IUserFavoriteRepository
 
-    def __init__(self, roadmap_repo: IRoadmapRepository, graph_repo: IGraphRepository):
+    def __init__(self, roadmap_repo: IRoadmapRepository, graph_repo: IGraphRepository,
+                 user_favorite_repo: IUserFavoriteRepository):
         self.roadmap_repo = roadmap_repo
         self.graph_repo = graph_repo
+        self.user_favorites_repo = user_favorite_repo
 
     def create(self, command: CreateRoadmapCommand):
         roadmap_id = self.roadmap_repo.create(CreateRoadmap(
@@ -50,9 +59,10 @@ class RoadmapService:
             **command.dict()
         ))
 
-    def get_by_id(self, roadmap_id: str):
-        roadmap = self.roadmap_repo.get_by_id(roadmap_id)
-        graph = self.graph_repo.get_by_id(roadmap_id)
+    def get_by_id(self, command: GetRoadmapById):
+        roadmap = self.roadmap_repo.get_by_id(command.roadmap_id)
+        graph = self.graph_repo.get_by_id(command.roadmap_id)
+        # TODO(k-shir0): ユーザから Favorite を取得し上書きする処理
 
         roadmap_graph = Roadmap.from_dict({
             **roadmap.dict(),
