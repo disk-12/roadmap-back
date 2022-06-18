@@ -12,6 +12,7 @@ from .repository.cooud_firestore.graph import GraphRepository
 from .repository.cooud_firestore.roadmap import RoadmapRepository
 from .repository.cooud_firestore.task import TaskRepository
 from .repository.cooud_firestore.user import UserRepository
+from .repository.cooud_firestore.user_favorite import UserFavoriteRepository
 from .service.roadmap import RoadmapService
 from .service.task import TaskService
 
@@ -19,6 +20,7 @@ from .service.task import TaskService
 # env 読み出し ->
 #
 from .service.user import UserService
+from .service.user_favorite import UserFavoriteService
 
 
 @lru_cache()
@@ -65,6 +67,8 @@ taskRepo = TaskRepository(db=db)
 taskService = TaskService(taskRepo=taskRepo)
 user_repo = UserRepository(db=db)
 user_service = UserService(user_repo=user_repo)
+user_favorite_repo = UserFavoriteRepository(db=db)
+user_favorite_service = UserFavoriteService(user_favorite_repo=user_favorite_repo)
 roadmap_repo = RoadmapRepository(db=db)
 graph_repo = GraphRepository(db=db)
 roadmap_service = RoadmapService(roadmap_repo=roadmap_repo, graph_repo=graph_repo)
