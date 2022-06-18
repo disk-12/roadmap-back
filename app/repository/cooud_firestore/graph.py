@@ -48,7 +48,8 @@ class GraphRepository(IGraphRepository):
             edge_ary[edge.id] = {
                 EdgeKey.id: edge.id,
                 EdgeKey.source_id: edge.source_id,
-                EdgeKey.target_id: edge.target_id
+                EdgeKey.target_id: edge.target_id,
+                EdgeKey.is_solid_line: edge.is_solid_line,
             }
 
         vertex_ary: dict = {}
