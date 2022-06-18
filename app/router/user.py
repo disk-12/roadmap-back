@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response
 from pydantic import BaseModel
 
 from app.main import user_service
-from app.middleware.auth import get_user_id
+from app.middleware.auth import auth_user
 from app.model.user import User
 from app.service.user import GetMeCommand, CreateUserCommand, GetUserByIdCommand
 
@@ -16,7 +16,7 @@ class CreateUserRequest(BaseModel):
 
 
 @router.get('/user', response_model=User)
-async def show_user(uid=Depends(get_user_id)):
+async def show_user(uid=Depends(auth_user)):
     user = user_service.get_me(GetMeCommand(id=uid))
 
     if user is None:
@@ -26,7 +26,7 @@ async def show_user(uid=Depends(get_user_id)):
 
 
 @router.post('/user', status_code=status.HTTP_201_CREATED, response_class=Response)
-async def create_user(req: CreateUserRequest, uid=Depends(get_user_id)):
+async def create_user(req: CreateUserRequest, uid=Depends(auth_user)):
     success = user_service.create_user(CreateUserCommand(id=uid, name=req.name))
 
     if not success:

@@ -1,9 +1,12 @@
 import datetime
 from typing import Any, List
 
+from google.cloud import firestore
+
 from app.model.roadmap import RoadmapKey, Roadmap
 from app.repository.cooud_firestore.model import ModelName
-from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
+from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap, \
+    UpdateRoadmapFavoriteCount
 
 
 class RoadmapRepository(IRoadmapRepository):
@@ -69,3 +72,10 @@ class RoadmapRepository(IRoadmapRepository):
             RoadmapKey.edges: [],
             RoadmapKey.vertexes: [],
         })
+
+    def update_favorite_count(self, arg: UpdateRoadmapFavoriteCount) -> bool:
+        doc_ref = self.db.collection(ModelName.roadmaps).document(arg.id)
+
+        success = doc_ref.update({RoadmapKey.favorite_count: firestore.Increment(arg.count)})
+
+        return success is not None

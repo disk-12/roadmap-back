@@ -26,6 +26,11 @@ class UpdateRoadmap(BaseModel):
     tags: Union[list, None]
 
 
+class UpdateRoadmapFavoriteCount(BaseModel):
+    id: str
+    count: int
+
+
 class IRoadmapRepository(abc.ABC):
     @abc.abstractmethod
     def create(self, arg: CreateRoadmap) -> Union[str, None]:
@@ -41,4 +46,8 @@ class IRoadmapRepository(abc.ABC):
 
     @abc.abstractmethod
     def update(self, arg: UpdateRoadmap) -> bool:
+        raise NotImplementedError()
+
+    @abc.abstractmethod
+    def update_favorite_count(self, arg: UpdateRoadmapFavoriteCount) -> bool:
         raise NotImplementedError()

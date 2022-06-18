@@ -7,3 +7,4 @@ class ModelName(str, Enum):
     graphs = u'graphs'
     edges = u'edges',
     vertexes = u'vertexes'
+    user_favorites = u'user_favorites'

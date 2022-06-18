@@ -1,18 +1,34 @@
+from typing import Union
+
 from fastapi import Response, Depends, status, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth
 
 
-# Bearer ヘッダーを検証し Firebase User を返
-def get_user_id(res: Response,
-                cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))
-                ) -> dict:
-    if cred is None:
+# Bearer ヘッダーを検証し ID を返却
+def auth_user(
+        res: Response,
+        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))
+) -> str:
+    user_id = get_user_id(res, cred)
+
+    if user_id is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Bearer authentication required",
             headers={'WWW-Authenticate': 'Bearer realm="auth_required"'},
         )
+
+    return user_id
+
+
+# 認証をせずに uid を取得したい場合のみ使用する
+def get_user_id(
+        res: Response,
+        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))
+) -> Union[str, None]:
+    if cred is None:
+        return None
 
     try:
         from app.main import get_settings
