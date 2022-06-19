@@ -8,3 +8,4 @@ class ModelName(str, Enum):
     edges = u'edges',
     vertexes = u'vertexes'
     user_favorites = u'user_favorites'
+    user_achievement = u'user_achievements'
