@@ -4,7 +4,7 @@ from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
-    allow_origins: List[str] = ["https://localhost:3000"]
+    allow_origins: List[str] = ["http://localhost:3000"]
     service_key: str = "/usr/src/app/serviceAccountKey.json"
     dummy_uid: str = ""
 
