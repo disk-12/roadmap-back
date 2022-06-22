@@ -121,18 +121,30 @@ class RoadmapService:
     def get_roadmaps_by_newest(self, command: GetRoadmapsByNewestCommand):
         roadmaps = self.roadmap_repo.get_all(GetAllRoadmap(sorted_by=RoadmapKey.created_at))
 
+        return self.with_roadmaps(user_id=command.user_id, roadmaps=roadmaps)
+
+    def search_roadmaps(self, command: SearchRoadmapsCommand) -> List[Roadmap]:
+        roadmaps = self.roadmap_search_repo.search(SearchRoadmap(keyword=command.keyword))
+
+        # algolia から取得された物はソートされていないため、ソートする
+        sorted_roadmaps = sorted(roadmaps, key=lambda roadmap: roadmap.created_at, reverse=True)
+
+        return self.with_roadmaps(user_id=command.user_id, roadmaps=sorted_roadmaps)
+
+    # 各ロードマップお気に入りと実績を追加
+    def with_roadmaps(self, user_id: str, roadmaps: List[Roadmap]) -> List[Roadmap]:
         # ユーザお気に入り一覧と実績一覧を取得
         favorite_roadmap_ids: List[str] = []
         user_achievements: List[UserAchievement] = []
-        if command.user_id is not None:
+        if user_id is not None:
             # お気に入り一覧
-            user_favorite = self.user_favorites_repo.get_by_user_id(FindByUserId(id=command.user_id))
+            user_favorite = self.user_favorites_repo.get_by_user_id(FindByUserId(id=user_id))
             if user_favorite is not None:
                 favorite_roadmap_ids = user_favorite.roadmap_ids
 
             # 実績一覧
             user_achievements = self.user_achievement_repo.get_all_roadmap(
-                FindAllUserAchievements(user_id=command.user_id))
+                FindAllUserAchievements(user_id=user_id))
 
         new_roadmaps: List[Roadmap] = []
         for roadmap in roadmaps:
@@ -146,7 +158,3 @@ class RoadmapService:
             }))
 
         return new_roadmaps
-
-    def search_roadmaps(self, command: SearchRoadmapsCommand) -> List[Roadmap]:
-        roadmaps = self.roadmap_search_repo.search(SearchRoadmap(keyword=command.keyword))
-        return roadmaps

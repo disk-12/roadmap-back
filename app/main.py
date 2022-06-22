@@ -65,10 +65,15 @@ app.add_middleware(
 )
 
 #
-# FastAPI Repository And Service Init ->
+# Algolia 初期化
 #
 
 client = SearchClient.create(get_settings().algolia_app_id, get_settings().algolia_app_key)
+
+#
+# FastAPI Repository And Service Init ->
+#
+
 
 taskRepo = TaskRepository(db=db)
 user_repo = UserRepository(db=db)

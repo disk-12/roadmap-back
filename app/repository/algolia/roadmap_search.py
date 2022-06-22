@@ -14,7 +14,7 @@ class RoadmapSearchRepository(IRoadmapSearchRepository):
         self.client = client
 
     def search(self, arg: SearchRoadmap) -> List[Roadmap]:
-        index = self.client.init_index(IndexKey.roadmaps)
+        index = self.client.init_index(IndexKey.roadmaps.value)
         result = index.search(arg.keyword)
 
         hits = result['hits']
