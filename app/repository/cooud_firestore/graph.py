@@ -25,7 +25,7 @@ class GraphRepository(IGraphRepository):
         vertexes: List[Vertex] = []
         for vertex in vertex_ary:
             vertexes.append(
-                Vertex.from_dict(vertex)
+                Vertex.from_dict({**vertex, VertexKey.achieved: False})
             )
 
         edges: List[Edge] = []

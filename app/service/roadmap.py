@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from app.model.edge import Edge
 from app.model.roadmap import RoadmapKey, Roadmap
 from app.model.user_achievement import UserAchievement
-from app.model.vertex import Vertex
+from app.model.vertex import Vertex, VertexKey
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
 from app.repository.user_achievement import IUserAchievementRepository, FindAllUserAchievements, \
@@ -73,6 +73,7 @@ class RoadmapService:
         graph = self.graph_repo.get_by_id(command.roadmap_id)
         favorite = False
         achievement = None
+        vertexes = graph.vertexes
 
         # ユーザお気に入り一覧と実績一覧を取得
         if command.user_id is not None:
@@ -85,10 +86,17 @@ class RoadmapService:
             achievement = self.user_achievement_repo.get_by_roadmap_id(
                 FindUserAchievementByRoadmapId(roadmap_id=roadmap.id, user_id=command.user_id))
 
+            # 各 Vertex に Achieved かセットする
+            new_vertexes = []
+            for vertex in vertexes:
+                achieved = vertex.id in achievement.vertex_ids
+                new_vertexes.append(Vertex.from_dict({**vertex.dict(), VertexKey.achieved: achieved}))
+            vertexes = new_vertexes
+
         roadmap_graph = Roadmap.from_dict({
             **roadmap.dict(),
             RoadmapKey.favorited: favorite,
-            RoadmapKey.vertexes: graph.vertexes,
+            RoadmapKey.vertexes: vertexes,
             RoadmapKey.edges: graph.edges,
             RoadmapKey.achievement: achievement,
         })
