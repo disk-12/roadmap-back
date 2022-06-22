@@ -1,6 +1,8 @@
 import os
 from functools import lru_cache
+
 import firebase_admin
+from algoliasearch.search_client import SearchClient
 from fastapi import FastAPI
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -8,6 +10,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import Settings
+from .repository.algolia.roadmap_search import RoadmapSearchRepository
 from .repository.cooud_firestore.graph import GraphRepository
 from .repository.cooud_firestore.roadmap import RoadmapRepository
 from .repository.cooud_firestore.task import TaskRepository
@@ -62,14 +65,22 @@ app.add_middleware(
 )
 
 #
+# Algolia 初期化
+#
+
+client = SearchClient.create(get_settings().algolia_app_id, get_settings().algolia_app_key)
+
+#
 # FastAPI Repository And Service Init ->
 #
+
 
 taskRepo = TaskRepository(db=db)
 user_repo = UserRepository(db=db)
 user_favorite_repo = UserFavoriteRepository(db=db)
 user_achievement_repo = UserAchievementRepository(db=db)
 roadmap_repo = RoadmapRepository(db=db)
+roadmap_search_repo = RoadmapSearchRepository(client=client)
 graph_repo = GraphRepository(db=db)
 
 taskService = TaskService(taskRepo=taskRepo)
@@ -86,7 +97,8 @@ roadmap_service = RoadmapService(
     roadmap_repo=roadmap_repo,
     graph_repo=graph_repo,
     user_favorite_repo=user_favorite_repo,
-    user_achievement_repo=user_achievement_repo
+    user_achievement_repo=user_achievement_repo,
+    roadmap_search_repo=roadmap_search_repo
 )
 
 #
