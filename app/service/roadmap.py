@@ -8,6 +8,7 @@ from app.model.user_achievement import UserAchievement
 from app.model.vertex import Vertex, VertexKey
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
+from app.repository.roadmap_search import IRoadmapSearchRepository, SearchRoadmap
 from app.repository.user_achievement import IUserAchievementRepository, FindAllUserAchievements, \
     FindUserAchievementByRoadmapId
 from app.repository.user_favorite import IUserFavoriteRepository, FindByUserId
@@ -38,18 +39,26 @@ class GetRoadmapsByNewestCommand(BaseModel):
     user_id: Union[str, None]
 
 
+class SearchRoadmapsCommand(BaseModel):
+    keyword: str
+    user_id: Union[str, None]
+
+
 class RoadmapService:
     roadmap_repo: IRoadmapRepository
     graph_repo: IGraphRepository
     user_favorites_repo: IUserFavoriteRepository
     user_achievement_repo: IUserAchievementRepository
+    roadmap_search_repo: IRoadmapSearchRepository
 
     def __init__(self, roadmap_repo: IRoadmapRepository, graph_repo: IGraphRepository,
-                 user_favorite_repo: IUserFavoriteRepository, user_achievement_repo: IUserAchievementRepository):
+                 user_favorite_repo: IUserFavoriteRepository, user_achievement_repo: IUserAchievementRepository,
+                 roadmap_search_repo: IRoadmapSearchRepository):
         self.roadmap_repo = roadmap_repo
         self.graph_repo = graph_repo
         self.user_favorites_repo = user_favorite_repo
         self.user_achievement_repo = user_achievement_repo
+        self.roadmap_search_repo = roadmap_search_repo
 
     def create(self, command: CreateRoadmapCommand):
         roadmap_id = self.roadmap_repo.create(CreateRoadmap(
@@ -137,3 +146,7 @@ class RoadmapService:
             }))
 
         return new_roadmaps
+
+    def search_roadmaps(self, command: SearchRoadmapsCommand) -> List[Roadmap]:
+        roadmaps = self.roadmap_search_repo.search(SearchRoadmap(keyword=command.keyword))
+        return roadmaps
