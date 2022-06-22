@@ -1,9 +1,9 @@
-from typing import Union, Any
+from typing import Union, Any, List
 
 from app.model.user_achievement import UserAchievement, UserAchievementKey
 from app.repository.cooud_firestore.model import ModelName
 from app.repository.user_achievement import IUserAchievementRepository, FindUserAchievementByRoadmapId, \
-    UpdateUserAchievement
+    UpdateUserAchievement, FindAllUserAchievements
 
 
 class UserAchievementRepository(IUserAchievementRepository):
@@ -12,6 +12,18 @@ class UserAchievementRepository(IUserAchievementRepository):
 
     def __init__(self, db):
         self.db = db
+
+    def get_all_roadmap(self, arg: FindAllUserAchievements) -> List[UserAchievement]:
+        docs = self.db \
+            .collection(ModelName.user_achievement) \
+            .document(arg.user_id) \
+            .collection(ModelName.roadmaps).get()
+
+        ary = []
+        for doc in docs:
+            ary.append(UserAchievement.from_dict(doc.to_dict()))
+
+        return ary
 
     def get_by_roadmap_id(self, arg: FindUserAchievementByRoadmapId) -> Union[UserAchievement, None]:
         result = self.db \

@@ -71,6 +71,7 @@ class RoadmapRepository(IRoadmapRepository):
             RoadmapKey.favorited: False,
             RoadmapKey.edges: [],
             RoadmapKey.vertexes: [],
+            RoadmapKey.achievement: None,
         })
 
     def update_favorite_count(self, arg: UpdateRoadmapFavoriteCount) -> bool:

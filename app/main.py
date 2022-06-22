@@ -85,7 +85,8 @@ user_favorite_service = UserFavoriteService(
 roadmap_service = RoadmapService(
     roadmap_repo=roadmap_repo,
     graph_repo=graph_repo,
-    user_favorite_repo=user_favorite_repo
+    user_favorite_repo=user_favorite_repo,
+    user_achievement_repo=user_achievement_repo
 )
 
 #
