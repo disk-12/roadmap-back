@@ -73,14 +73,14 @@ async def post_delete_favorite(roadmap_id: str, uid=Depends(auth_user)):
     ))
 
 
-@router.post('/roadmaps/{roadmap_id}/achievement/{vertex_id}', status_code=status.HTTP_204_NO_CONTENT,
+@router.post('/roadmaps/{roadmap_id}/vertex/{vertex_id}/achievement', status_code=status.HTTP_204_NO_CONTENT,
              response_class=Response)
 async def post_give_achievement(roadmap_id: str, vertex_id, uid=Depends(auth_user)):
     user_achievement_service.give_achievement(
         GiveAchievementCommand(roadmap_id=roadmap_id, vertex_id=vertex_id, user_id=uid))
 
 
-@router.delete('/roadmaps/{roadmap_id}/achievement/{vertex_id}', status_code=status.HTTP_204_NO_CONTENT,
+@router.delete('/roadmaps/{roadmap_id}/vertex/{vertex_id}/achievement', status_code=status.HTTP_204_NO_CONTENT,
                response_class=Response)
 async def post_give_achievement(roadmap_id: str, vertex_id, uid=Depends(auth_user)):
     user_achievement_service.take_achievement(
