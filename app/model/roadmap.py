@@ -1,10 +1,11 @@
 import datetime
 from enum import Enum
-from typing import List
+from typing import List, Union
 
 from pydantic import BaseModel
 
 from app.model.edge import Edge
+from app.model.user_achievement import UserAchievement
 from app.model.vertex import Vertex
 
 
@@ -17,6 +18,7 @@ class RoadmapKey(str, Enum):
     tags = u"tags"
     edges = u"edges"
     vertexes = u"vertexes"
+    achievement = u"achievement"
     created_at = u'created_at'
     updated_at = u'updated_at'
 
@@ -30,12 +32,12 @@ class Roadmap(BaseModel):
     tags: list
     edges: List[Edge]
     vertexes: List[Vertex]
+    achievement: Union[UserAchievement, None]
     created_at: datetime.datetime
     updated_at: datetime.datetime
 
     @staticmethod
     def from_dict(source):
-        vertexes: List[Vertex] = source[RoadmapKey.vertexes]
 
         return Roadmap(
             id=source[RoadmapKey.id],
@@ -45,7 +47,8 @@ class Roadmap(BaseModel):
             favorite_count=source[RoadmapKey.favorite_count],
             tags=source[RoadmapKey.tags],
             edges=source[RoadmapKey.edges],
-            vertexes=vertexes,
+            vertexes= source[RoadmapKey.vertexes],
+            achievement=source[RoadmapKey.achievement],
             created_at=source[RoadmapKey.created_at],
             updated_at=source[RoadmapKey.updated_at]
         )
