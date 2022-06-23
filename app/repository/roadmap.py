@@ -14,6 +14,7 @@ class CreateRoadmap(BaseModel):
     tags: list
     edges: List[Edge]
     vertexes: List[BaseVertex]
+    thumbnail: Union[str, None]
 
 
 class GetAllRoadmap(BaseModel):
@@ -24,6 +25,7 @@ class UpdateRoadmap(BaseModel):
     id: str
     title: Union[str, None]
     tags: Union[list, None]
+    thumbnail: Union[str, None]
 
 
 class UpdateRoadmapFavoriteCount(BaseModel):

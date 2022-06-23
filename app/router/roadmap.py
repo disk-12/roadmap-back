@@ -21,6 +21,7 @@ class CreateRoadmapRequest(BaseModel):
     tags: list
     edges: List[Edge]
     vertexes: List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]]
+    thumbnail: Union[str, None]
 
 
 class UpdateRoadmapRequest(BaseModel):
@@ -28,6 +29,7 @@ class UpdateRoadmapRequest(BaseModel):
     tags: Union[list, None]
     edges: Union[List[Edge], None]
     vertexes: Union[List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]], None]
+    thumbnail: Union[str, None]
 
 
 # NOTE:
@@ -45,6 +47,7 @@ async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(auth_user)):
         tags=[],
         edges=req.edges,
         vertexes=req.vertexes,
+        thumbnail=req.thumbnail,
     ))
 
 
