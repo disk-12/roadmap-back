@@ -1,4 +1,3 @@
-import datetime
 from enum import Enum
 
 from pydantic import BaseModel
@@ -11,10 +10,13 @@ class VertexKey(str, Enum):
     achieved = u"achieved"
 
 
-class Vertex(BaseModel):
+class BaseVertex(BaseModel):
     id: str
     x_coordinate: int
     y_coordinate: int
+
+
+class Vertex(BaseVertex):
     achieved: bool
 
     @staticmethod

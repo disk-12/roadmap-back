@@ -7,7 +7,7 @@ from app.main import roadmap_service, user_favorite_service, user_achievement_se
 from app.middleware.auth import auth_user, get_user_id
 from app.model.edge import Edge
 from app.model.roadmap import Roadmap, RoadmapKey
-from app.model.vertex import Vertex
+from app.model.vertex import Vertex, BaseVertex
 from app.service.roadmap import CreateRoadmapCommand, UpdateRoadmapCommand, GetRoadmapById, GetRoadmapsByNewestCommand, \
     SearchRoadmapsCommand
 from app.service.user_achievement import GiveAchievementCommand, TakeAchievementCommand
@@ -20,14 +20,14 @@ class CreateRoadmapRequest(BaseModel):
     title: str
     tags: list
     edges: List[Edge]
-    vertexes: List[Vertex]
+    vertexes: List[BaseVertex]
 
 
 class UpdateRoadmapRequest(BaseModel):
     title: Union[str, None]
     tags: Union[list, None]
     edges: Union[List[Edge], None]
-    vertexes: Union[List[Vertex], None]
+    vertexes: Union[List[BaseVertex], None]
 
 
 # NOTE:

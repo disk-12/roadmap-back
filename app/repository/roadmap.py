@@ -5,7 +5,7 @@ from typing import List, Union
 
 from app.model.edge import Edge
 from app.model.roadmap import Roadmap, RoadmapKey
-from app.model.vertex import Vertex
+from app.model.vertex import Vertex, BaseVertex
 
 
 class CreateRoadmap(BaseModel):
@@ -13,7 +13,7 @@ class CreateRoadmap(BaseModel):
     title: str
     tags: list
     edges: List[Edge]
-    vertexes: List[Vertex]
+    vertexes: List[BaseVertex]
 
 
 class GetAllRoadmap(BaseModel):
