@@ -13,12 +13,10 @@ from app.config import Settings
 from .repository.algolia.roadmap_search import RoadmapSearchRepository
 from .repository.cooud_firestore.graph import GraphRepository
 from .repository.cooud_firestore.roadmap import RoadmapRepository
-from .repository.cooud_firestore.task import TaskRepository
 from .repository.cooud_firestore.user import UserRepository
 from .repository.cooud_firestore.user_achievement import UserAchievementRepository
 from .repository.cooud_firestore.user_favorite import UserFavoriteRepository
 from .service.roadmap import RoadmapService
-from .service.task import TaskService
 
 #
 # env 読み出し ->
@@ -75,7 +73,6 @@ client = SearchClient.create(get_settings().algolia_app_id, get_settings().algol
 #
 
 
-taskRepo = TaskRepository(db=db)
 user_repo = UserRepository(db=db)
 user_favorite_repo = UserFavoriteRepository(db=db)
 user_achievement_repo = UserAchievementRepository(db=db)
@@ -83,7 +80,6 @@ roadmap_repo = RoadmapRepository(db=db)
 roadmap_search_repo = RoadmapSearchRepository(client=client)
 graph_repo = GraphRepository(db=db)
 
-taskService = TaskService(taskRepo=taskRepo)
 user_service = UserService(user_repo=user_repo)
 user_achievement_service = UserAchievementService(
     user_achievement_repo=user_achievement_repo,
@@ -106,9 +102,8 @@ roadmap_service = RoadmapService(
 #
 
 # インポートを上に移動すると動作しないので注意
-from .router import task, user, roadmap
+from .router import user, roadmap
 
-app.include_router(task.router)
 app.include_router(user.router)
 app.include_router(roadmap.router)
 
