@@ -41,6 +41,7 @@ class BaseVertex(BaseModel):
 
 
 class Vertex(BaseVertex):
+    type: Literal[VertexType.default]
     achieved: bool
 
     @staticmethod
@@ -64,20 +65,7 @@ class BaseYoutubeVertex(BaseVertex):
 
 
 class YoutubeVertex(Vertex, BaseYoutubeVertex):
-    @staticmethod
-    def from_dict(source: dict):
-        return YoutubeVertex(
-            id=source[VertexKey.id],
-            type=source[VertexKey.type],
-            x_coordinate=source[VertexKey.x_coordinate],
-            y_coordinate=source[VertexKey.y_coordinate],
-            title=source[VertexKey.title],
-            content=source[VertexKey.content],
-            achieved=source[VertexKey.achieved],
-            youtube_id=source[VertexKey.youtube_id],
-            youtube_start=source[VertexKey.youtube_start],
-            youtube_end=source[VertexKey.youtube_end],
-        )
+    type: Literal[VertexType.youtube]
 
 
 class BaseLinkVertex(BaseVertex):
@@ -113,6 +101,7 @@ class InLinkVertex(BaseLinkVertex):
 
 
 class LinkVertex(Vertex, BaseLinkVertex):
+    type: Literal[VertexType.link]
     ogp_url: Union[str, None]
     ogp_title: Union[str, None]
     ogp_description: Union[str, None]
@@ -121,6 +110,8 @@ class LinkVertex(Vertex, BaseLinkVertex):
 
     @staticmethod
     def from_dict(source: dict):
+        print(source)
+
         return LinkVertex(
             id=source[VertexKey.id],
             type=source[VertexKey.type],

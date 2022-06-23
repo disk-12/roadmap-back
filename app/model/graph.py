@@ -1,11 +1,11 @@
 import datetime
 from enum import Enum
-from typing import List, Any
+from typing import List, Any, Union
 
 from pydantic import BaseModel
 
 from app.model.edge import Edge
-from app.model.vertex import Vertex
+from app.model.vertex import Vertex, YoutubeVertex, LinkVertex
 
 
 class GraphKey(str, Enum):
@@ -19,7 +19,7 @@ class GraphKey(str, Enum):
 class Graph(BaseModel):
     id: str
     edges: List[Edge]
-    vertexes: List[Vertex]
+    vertexes: List[Union[Vertex, YoutubeVertex, LinkVertex]]
     created_at: datetime.datetime
     updated_at: datetime.datetime
 

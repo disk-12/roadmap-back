@@ -1,9 +1,10 @@
 import datetime
 from typing import Any, List, Union
 
-from app.model.edge import EdgeKey, Edge
+from app.model.edge import Edge
 from app.model.graph import GraphKey, Graph
-from app.model.vertex import VertexKey, Vertex, VertexType, InLinkVertex, BaseVertex, BaseYoutubeVertex
+from app.model.vertex import VertexKey, Vertex, VertexType, InLinkVertex, BaseVertex, BaseYoutubeVertex, YoutubeVertex, \
+    LinkVertex
 from app.repository.cooud_firestore.model import ModelName
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 
@@ -22,11 +23,23 @@ class GraphRepository(IGraphRepository):
         vertex_ary = graph_dict[GraphKey.vertexes].values()
         edge_ary = graph_dict[GraphKey.edges].values()
 
-        vertexes: List[Vertex] = []
+        vertexes: List[Union[Vertex, YoutubeVertex, LinkVertex]] = []
         for vertex in vertex_ary:
-            vertexes.append(
-                Vertex.from_dict({**vertex, VertexKey.achieved: False})
-            )
+            if vertex[VertexKey.type] == VertexType.default:
+                vertexes.append(Vertex(
+                    **vertex,
+                    achieved=False
+                ))
+            if vertex[VertexKey.type] == VertexType.youtube:
+                vertexes.append(YoutubeVertex(
+                    **vertex,
+                    achieved=False
+                ))
+            if vertex[VertexKey.type] == VertexType.link:
+                vertexes.append(LinkVertex(
+                    **vertex,
+                    achieved=False
+                ))
 
         edges: List[Edge] = []
         for edge in edge_ary:

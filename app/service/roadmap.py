@@ -95,12 +95,13 @@ class RoadmapService:
             achievement = self.user_achievement_repo.get_by_roadmap_id(
                 FindUserAchievementByRoadmapId(roadmap_id=roadmap.id, user_id=command.user_id))
 
-            # 各 Vertex に Achieved かセットする
-            new_vertexes = []
-            for vertex in vertexes:
-                achieved = vertex.id in achievement.vertex_ids
-                new_vertexes.append(Vertex.from_dict({**vertex.dict(), VertexKey.achieved: achieved}))
-            vertexes = new_vertexes
+            if achievement is not None:
+                # 各 Vertex に Achieved かセットする
+                new_vertexes = []
+                for vertex in vertexes:
+                    achieved = vertex.id in achievement.vertex_ids
+                    new_vertexes.append(Vertex(**vertex.dict(), achieved=achieved))
+                vertexes = new_vertexes
 
         roadmap_graph = Roadmap.from_dict({
             **roadmap.dict(),
