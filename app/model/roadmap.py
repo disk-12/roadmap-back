@@ -18,6 +18,7 @@ class RoadmapKey(str, Enum):
     tags = u"tags"
     edges = u"edges"
     vertexes = u"vertexes"
+    thumbnail = u"thumbnail"
     achievement = u"achievement"
     created_at = u'created_at'
     updated_at = u'updated_at'
@@ -32,6 +33,7 @@ class Roadmap(BaseModel):
     tags: list
     edges: List[Edge]
     vertexes: List[Union[Vertex, LinkVertex, YoutubeVertex]]
+    thumbnail: Union[str, None]
     achievement: Union[UserAchievement, None]
     created_at: datetime.datetime
     updated_at: datetime.datetime
@@ -47,6 +49,7 @@ class Roadmap(BaseModel):
             tags=source[RoadmapKey.tags],
             edges=source[RoadmapKey.edges],
             vertexes=source[RoadmapKey.vertexes],
+            thumbnail=source[RoadmapKey.thumbnail],
             achievement=source[RoadmapKey.achievement],
             created_at=source[RoadmapKey.created_at],
             updated_at=source[RoadmapKey.updated_at]

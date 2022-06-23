@@ -20,6 +20,7 @@ class CreateRoadmapCommand(BaseModel):
     tags: List[str]
     edges: List[Edge]
     vertexes: List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]]
+    thumbnail: Union[str, None]
 
 
 class GetRoadmapById(BaseModel):
@@ -33,6 +34,7 @@ class UpdateRoadmapCommand(BaseModel):
     tags: Union[list, None]
     edges: Union[List[Edge], None]
     vertexes: Union[List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]], None]
+    thumbnail: Union[str, None]
 
 
 class GetRoadmapsByNewestCommand(BaseModel):
@@ -67,6 +69,7 @@ class RoadmapService:
             tags=command.tags,
             edges=command.edges,
             vertexes=command.vertexes,
+            thumbnail=command.thumbnail,
         ))
 
         if roadmap_id is None:

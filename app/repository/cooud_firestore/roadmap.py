@@ -23,6 +23,7 @@ class RoadmapRepository(IRoadmapRepository):
             RoadmapKey.author_id: arg.author_id,
             RoadmapKey.title: arg.title,
             RoadmapKey.tags: arg.tags,
+            RoadmapKey.thumbnail: arg.thumbnail,
             RoadmapKey.favorite_count: 0,
             RoadmapKey.created_at: datetime.datetime.now(),
             RoadmapKey.updated_at: datetime.datetime.now()
