@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from pydantic import BaseModel
 
@@ -15,7 +13,10 @@ class CreateUserRequest(BaseModel):
     name: str
 
 
-@router.get('/user', response_model=User)
+@router.get(
+    '/user',
+    tags=['users'],
+    response_model=User)
 async def show_user(uid=Depends(auth_user)):
     user = user_service.get_me(GetMeCommand(id=uid))
 
@@ -25,7 +26,10 @@ async def show_user(uid=Depends(auth_user)):
     return user
 
 
-@router.post('/user', status_code=status.HTTP_201_CREATED, response_class=Response)
+@router.post('/user',
+             tags=['users'],
+             status_code=status.HTTP_201_CREATED,
+             response_class=Response)
 async def create_user(req: CreateUserRequest, uid=Depends(auth_user)):
     success = user_service.create_user(CreateUserCommand(id=uid, name=req.name))
 
@@ -33,6 +37,8 @@ async def create_user(req: CreateUserRequest, uid=Depends(auth_user)):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT)
 
 
-@router.get('/users/{user_id}')
+@router.get(
+    '/users/{user_id}',
+    tags=['users'])
 async def get_user(user_id: str):
     return user_service.get_user_by_id(GetUserByIdCommand(id=user_id))
