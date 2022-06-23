@@ -10,6 +10,7 @@ class CreateRoadmap(BaseModel):
     author_id: str
     title: str
     tags: List[str]
+    locked: bool
     thumbnail: Union[str, None]
 
 
@@ -21,6 +22,7 @@ class UpdateRoadmap(BaseModel):
     id: str
     title: Union[str, None]
     tags: Union[list, None]
+    locked: Union[bool, None]
     thumbnail: Union[str, None]
 
 

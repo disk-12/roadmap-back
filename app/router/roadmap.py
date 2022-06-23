@@ -3,13 +3,13 @@ from typing import List, Union
 from fastapi import Depends, APIRouter, status, Response
 from pydantic import BaseModel
 
-from app.main import roadmap_service, user_favorite_service, user_achievement_service, client
+from app.main import roadmap_service, user_favorite_service, user_achievement_service
 from app.middleware.auth import auth_user, get_user_id
 from app.model.edge import Edge
 from app.model.roadmap import Roadmap
 from app.model.vertex import BaseVertex, BaseYoutubeVertex, BaseLinkVertex
-from app.service.roadmap import CreateRoadmapCommand, UpdateRoadmapCommand, GetRoadmapById, GetRoadmapsByNewestCommand, \
-    SearchRoadmapsCommand
+from app.service.roadmap import CreateRoadmapCommand, UpdateRoadmapCommand, GetRoadmapById, \
+    GetRoadmapsByNewestCommand, SearchRoadmapsCommand
 from app.service.user_achievement import GiveAchievementCommand, TakeAchievementCommand
 from app.service.user_favorite import AddFavoriteCommand, DeleteFavoriteCommand
 
@@ -21,6 +21,7 @@ class CreateRoadmapRequest(BaseModel):
     tags: List[str]
     edges: List[Edge]
     vertexes: List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]]
+    locked: bool
     thumbnail: Union[str, None]
 
 
@@ -29,6 +30,7 @@ class UpdateRoadmapRequest(BaseModel):
     tags: Union[list, None]
     edges: Union[List[Edge], None]
     vertexes: Union[List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]], None]
+    locked: Union[bool, None]
     thumbnail: Union[str, None]
 
 
@@ -46,6 +48,7 @@ async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(auth_user)):
         tags=req.tags,
         edges=req.edges,
         vertexes=req.vertexes,
+        locked=req.locked,
         thumbnail=req.thumbnail,
     ))
 
@@ -63,8 +66,9 @@ async def show_roadmap(roadmap_id: str, uid=Depends(get_user_id)):
     tags=['roadmaps'],
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response)
-async def patch_roadmap(roadmap_id: str, req: UpdateRoadmapRequest, _=Depends(auth_user)):
+async def patch_roadmap(roadmap_id: str, req: UpdateRoadmapRequest, uid=Depends(auth_user)):
     roadmap_service.update(command=UpdateRoadmapCommand(
+        user_id=uid,
         id=roadmap_id,
         **req.dict()
     ))
