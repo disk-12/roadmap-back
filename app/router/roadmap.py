@@ -18,7 +18,7 @@ router = APIRouter()
 
 class CreateRoadmapRequest(BaseModel):
     title: str
-    tags: list
+    tags: List[str]
     edges: List[Edge]
     vertexes: List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]]
     thumbnail: Union[str, None]
@@ -43,8 +43,7 @@ async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(auth_user)):
     roadmap_service.create(CreateRoadmapCommand(
         author_id=uid,
         title=req.title,
-        # TODO(k-shir0): 入力するようにする
-        tags=[],
+        tags=req.tags,
         edges=req.edges,
         vertexes=req.vertexes,
         thumbnail=req.thumbnail,

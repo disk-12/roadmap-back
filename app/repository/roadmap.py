@@ -11,7 +11,7 @@ from app.model.vertex import Vertex, BaseVertex
 class CreateRoadmap(BaseModel):
     author_id: str
     title: str
-    tags: list
+    tags: List[str]
     edges: List[Edge]
     vertexes: List[BaseVertex]
     thumbnail: Union[str, None]
