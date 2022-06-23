@@ -19,6 +19,7 @@ class CreateRoadmapCommand(BaseModel):
     title: str
     tags: List[str]
     edges: List[Edge]
+    locked: bool
     vertexes: List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]]
     thumbnail: Union[str, None]
 
@@ -29,10 +30,12 @@ class GetRoadmapById(BaseModel):
 
 
 class UpdateRoadmapCommand(BaseModel):
+    user_id: str
     id: str
     title: Union[str, None]
     tags: Union[list, None]
     edges: Union[List[Edge], None]
+    locked: Union[bool, None]
     vertexes: Union[List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]], None]
     thumbnail: Union[str, None]
 
@@ -67,6 +70,7 @@ class RoadmapService:
             author_id=command.author_id,
             title=command.title,
             tags=command.tags,
+            locked=command.locked,
             thumbnail=command.thumbnail,
         ))
 
@@ -115,6 +119,12 @@ class RoadmapService:
         return roadmap_graph
 
     def update(self, command: UpdateRoadmapCommand) -> bool:
+        roadmap = self.roadmap_repo.get_by_id(command.id)
+
+        if roadmap.locked and command.user_id != roadmap.author_id:
+            # エラーハンドリング
+            return False
+
         roadmap_result = self.roadmap_repo.update(arg=UpdateRoadmap(**command.dict()))
         graph_result = self.graph_repo.update(arg=UpdateGraph(**command.dict()))
 
