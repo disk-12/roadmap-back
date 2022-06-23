@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from app.model.edge import Edge
 from app.model.roadmap import RoadmapKey, Roadmap
 from app.model.user_achievement import UserAchievement
-from app.model.vertex import Vertex, VertexKey
+from app.model.vertex import Vertex, VertexKey, BaseVertex, BaseYoutubeVertex, BaseLinkVertex
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
 from app.repository.roadmap_search import IRoadmapSearchRepository, SearchRoadmap
@@ -17,9 +17,9 @@ from app.repository.user_favorite import IUserFavoriteRepository, FindByUserId
 class CreateRoadmapCommand(BaseModel):
     author_id: str
     title: str
-    tags: list
-    edges: list
-    vertexes: list
+    tags: List[str]
+    edges: List[Edge]
+    vertexes: List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]]
 
 
 class GetRoadmapById(BaseModel):
@@ -32,7 +32,7 @@ class UpdateRoadmapCommand(BaseModel):
     title: Union[str, None]
     tags: Union[list, None]
     edges: Union[List[Edge], None]
-    vertexes: Union[List[Vertex], None]
+    vertexes: Union[List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]], None]
 
 
 class GetRoadmapsByNewestCommand(BaseModel):
@@ -95,12 +95,13 @@ class RoadmapService:
             achievement = self.user_achievement_repo.get_by_roadmap_id(
                 FindUserAchievementByRoadmapId(roadmap_id=roadmap.id, user_id=command.user_id))
 
-            # 各 Vertex に Achieved かセットする
-            new_vertexes = []
-            for vertex in vertexes:
-                achieved = vertex.id in achievement.vertex_ids
-                new_vertexes.append(Vertex.from_dict({**vertex.dict(), VertexKey.achieved: achieved}))
-            vertexes = new_vertexes
+            if achievement is not None:
+                # 各 Vertex に Achieved かセットする
+                new_vertexes = []
+                for vertex in vertexes:
+                    achieved = vertex.id in achievement.vertex_ids
+                    new_vertexes.append(Vertex(**vertex.dict(), achieved=achieved))
+                vertexes = new_vertexes
 
         roadmap_graph = Roadmap.from_dict({
             **roadmap.dict(),
