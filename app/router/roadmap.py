@@ -6,8 +6,8 @@ from pydantic import BaseModel
 from app.main import roadmap_service, user_favorite_service, user_achievement_service, client
 from app.middleware.auth import auth_user, get_user_id
 from app.model.edge import Edge
-from app.model.roadmap import Roadmap, RoadmapKey
-from app.model.vertex import Vertex, BaseVertex
+from app.model.roadmap import Roadmap
+from app.model.vertex import BaseVertex, BaseYoutubeVertex, BaseLinkVertex
 from app.service.roadmap import CreateRoadmapCommand, UpdateRoadmapCommand, GetRoadmapById, GetRoadmapsByNewestCommand, \
     SearchRoadmapsCommand
 from app.service.user_achievement import GiveAchievementCommand, TakeAchievementCommand
@@ -20,7 +20,7 @@ class CreateRoadmapRequest(BaseModel):
     title: str
     tags: list
     edges: List[Edge]
-    vertexes: List[BaseVertex]
+    vertexes: List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]]
 
 
 class UpdateRoadmapRequest(BaseModel):

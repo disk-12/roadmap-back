@@ -6,13 +6,13 @@ from pydantic import BaseModel
 
 from app.model.edge import Edge
 from app.model.graph import Graph
-from app.model.vertex import Vertex, BaseVertex
+from app.model.vertex import Vertex, BaseVertex, BaseYoutubeVertex, BaseLinkVertex
 
 
 class CreateGraph(BaseModel):
     id: str
     edges: List[Edge]
-    vertexes: List[BaseVertex]
+    vertexes: List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]]
 
 
 class UpdateGraph(BaseModel):

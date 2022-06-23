@@ -3,7 +3,7 @@ from typing import Any, List
 
 from app.model.edge import EdgeKey, Edge
 from app.model.graph import GraphKey, Graph
-from app.model.vertex import VertexKey, Vertex
+from app.model.vertex import VertexKey, Vertex, VertexType
 from app.repository.cooud_firestore.model import ModelName
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 
@@ -54,11 +54,33 @@ class GraphRepository(IGraphRepository):
 
         vertex_ary: dict = {}
         for vertex in arg.vertexes:
-            vertex_ary[vertex.id] = {
-                VertexKey.id: vertex.id,
-                VertexKey.x_coordinate: vertex.x_coordinate,
-                VertexKey.y_coordinate: vertex.y_coordinate
-            }
+            if vertex.type == VertexType.default:
+                vertex_ary[vertex.id] = {
+                    VertexKey.id: vertex.id,
+                    VertexKey.type: vertex.type,
+                    VertexKey.x_coordinate: vertex.x_coordinate,
+                    VertexKey.y_coordinate: vertex.y_coordinate
+                }
+
+            if vertex.type == VertexType.youtube:
+                vertex_ary[vertex.id] = {
+                    VertexKey.id: vertex.id,
+                    VertexKey.type: vertex.type,
+                    VertexKey.x_coordinate: vertex.x_coordinate,
+                    VertexKey.y_coordinate: vertex.y_coordinate,
+                    VertexKey.youtube_id: vertex.youtube_id,
+                    VertexKey.youtube_start: vertex.youtube_start,
+                    VertexKey.youtube_end: vertex.youtube_end
+                }
+
+            if vertex.type == VertexType.link:
+                vertex_ary[vertex.id] = {
+                    VertexKey.id: vertex.id,
+                    VertexKey.type: vertex.type,
+                    VertexKey.x_coordinate: vertex.x_coordinate,
+                    VertexKey.y_coordinate: vertex.y_coordinate,
+                    VertexKey.link: vertex.link,
+                }
 
         success = doc_ref.set({
             GraphKey.id: doc_ref.id,

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from app.model.edge import Edge
 from app.model.roadmap import RoadmapKey, Roadmap
 from app.model.user_achievement import UserAchievement
-from app.model.vertex import Vertex, VertexKey, BaseVertex
+from app.model.vertex import Vertex, VertexKey, BaseVertex, BaseYoutubeVertex, BaseLinkVertex
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
 from app.repository.roadmap_search import IRoadmapSearchRepository, SearchRoadmap
@@ -19,7 +19,7 @@ class CreateRoadmapCommand(BaseModel):
     title: str
     tags: List[str]
     edges: List[Edge]
-    vertexes: List[BaseVertex]
+    vertexes: List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]]
 
 
 class GetRoadmapById(BaseModel):
