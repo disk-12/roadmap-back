@@ -9,6 +9,8 @@ class VertexKey(str, Enum):
     type = u"type"
     x_coordinate = u"x_coordinate"
     y_coordinate = u"y_coordinate"
+    title = u"title"
+    content = u"content"
     achieved = u"achieved"
 
     youtube_id = u"youtube_id"
@@ -34,6 +36,8 @@ class BaseVertex(BaseModel):
     type: Literal[VertexType.default]
     x_coordinate: int
     y_coordinate: int
+    title: str
+    content: str
 
 
 class Vertex(BaseVertex):
@@ -46,6 +50,8 @@ class Vertex(BaseVertex):
             type=source[VertexKey.type],
             x_coordinate=source[VertexKey.x_coordinate],
             y_coordinate=source[VertexKey.y_coordinate],
+            title=source[VertexKey.title],
+            content=source[VertexKey.content],
             achieved=source[VertexKey.achieved],
         )
 
@@ -65,6 +71,8 @@ class YoutubeVertex(Vertex, BaseYoutubeVertex):
             type=source[VertexKey.type],
             x_coordinate=source[VertexKey.x_coordinate],
             y_coordinate=source[VertexKey.y_coordinate],
+            title=source[VertexKey.title],
+            content=source[VertexKey.content],
             achieved=source[VertexKey.achieved],
             youtube_id=source[VertexKey.youtube_id],
             youtube_start=source[VertexKey.youtube_start],
@@ -93,6 +101,8 @@ class InLinkVertex(BaseLinkVertex):
             type=source[VertexKey.type],
             x_coordinate=source[VertexKey.x_coordinate],
             y_coordinate=source[VertexKey.y_coordinate],
+            title=source[VertexKey.title],
+            content=source[VertexKey.content],
             link=source[VertexKey.link],
             ogp_url=source[VertexKey.ogp_url],
             ogp_title=source[VertexKey.ogp_title],
@@ -116,6 +126,8 @@ class LinkVertex(Vertex, BaseLinkVertex):
             type=source[VertexKey.type],
             x_coordinate=source[VertexKey.x_coordinate],
             y_coordinate=source[VertexKey.y_coordinate],
+            title=source[VertexKey.title],
+            content=source[VertexKey.content],
             achieved=source[VertexKey.achieved],
             link=source[VertexKey.link],
             ogp_url=source[VertexKey.ogp_url],

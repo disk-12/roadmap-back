@@ -62,10 +62,10 @@ class GraphRepository(IGraphRepository):
         new_items = {k: v for k, v in arg.dict().items() if v is not None}
 
         if arg.edges is not None:
-            new_items[GraphKey.edges] = self.to_in_vertexes_dict(arg.vertexes)
+            new_items[GraphKey.edges] = dict((edge.id, {**edge.dict()}) for edge in arg.edges)
 
         if arg.vertexes is not None:
-            new_items[GraphKey.vertexes] = dict((edge.id, {**edge.dict()}) for edge in arg.edges)
+            new_items[GraphKey.vertexes] = self.to_in_vertexes_dict(arg.vertexes)
 
         success = doc_ref.update(new_items)
 
