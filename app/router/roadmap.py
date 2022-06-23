@@ -32,7 +32,10 @@ class UpdateRoadmapRequest(BaseModel):
 
 # NOTE:
 # response_class に Response を指定すると Swagger 上で Null になる
-@router.post('/roadmaps', status_code=status.HTTP_201_CREATED, response_class=Response)
+@router.post('/roadmaps',
+             tags=['roadmaps'],
+             status_code=status.HTTP_201_CREATED,
+             response_class=Response)
 async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(auth_user)):
     # TODO(k-shir0): エラーハンドリング
     roadmap_service.create(CreateRoadmapCommand(
@@ -45,12 +48,19 @@ async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(auth_user)):
     ))
 
 
-@router.get('/roadmaps/{roadmap_id}', response_model=Roadmap)
+@router.get(
+    '/roadmaps/{roadmap_id}',
+    tags=['roadmaps'],
+    response_model=Roadmap)
 async def show_roadmap(roadmap_id: str, uid=Depends(get_user_id)):
     return roadmap_service.get_by_id(GetRoadmapById(user_id=uid, roadmap_id=roadmap_id))
 
 
-@router.patch('/roadmaps/{roadmap_id}', status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+@router.patch(
+    '/roadmaps/{roadmap_id}',
+    tags=['roadmaps'],
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response)
 async def patch_roadmap(roadmap_id: str, req: UpdateRoadmapRequest, _=Depends(auth_user)):
     roadmap_service.update(command=UpdateRoadmapCommand(
         id=roadmap_id,
@@ -58,7 +68,11 @@ async def patch_roadmap(roadmap_id: str, req: UpdateRoadmapRequest, _=Depends(au
     ))
 
 
-@router.post('/roadmaps/{roadmap_id}/favorite', status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+@router.post(
+    '/roadmaps/{roadmap_id}/favorite',
+    tags=['roadmaps'],
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response)
 async def post_add_favorite(roadmap_id: str, uid=Depends(auth_user)):
     user_favorite_service.add_favorite(AddFavoriteCommand(
         user_id=uid,
@@ -66,7 +80,11 @@ async def post_add_favorite(roadmap_id: str, uid=Depends(auth_user)):
     ))
 
 
-@router.delete('/roadmaps/{roadmap_id}/favorite', status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+@router.delete(
+    '/roadmaps/{roadmap_id}/favorite',
+    tags=['roadmaps'],
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response)
 async def post_delete_favorite(roadmap_id: str, uid=Depends(auth_user)):
     user_favorite_service.delete_favorite(DeleteFavoriteCommand(
         user_id=uid,
@@ -74,26 +92,36 @@ async def post_delete_favorite(roadmap_id: str, uid=Depends(auth_user)):
     ))
 
 
-@router.post('/roadmaps/{roadmap_id}/vertex/{vertex_id}/achievement', status_code=status.HTTP_204_NO_CONTENT,
-             response_class=Response)
+@router.post(
+    '/roadmaps/{roadmap_id}/vertex/{vertex_id}/achievement', tags=['roadmaps'],
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response)
 async def post_give_achievement(roadmap_id: str, vertex_id, uid=Depends(auth_user)):
     user_achievement_service.give_achievement(
         GiveAchievementCommand(roadmap_id=roadmap_id, vertex_id=vertex_id, user_id=uid))
 
 
-@router.delete('/roadmaps/{roadmap_id}/vertex/{vertex_id}/achievement', status_code=status.HTTP_204_NO_CONTENT,
-               response_class=Response)
+@router.delete(
+    '/roadmaps/{roadmap_id}/vertex/{vertex_id}/achievement',
+    tags=['roadmaps'],
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response)
 async def post_give_achievement(roadmap_id: str, vertex_id, uid=Depends(auth_user)):
     user_achievement_service.take_achievement(
         TakeAchievementCommand(roadmap_id=roadmap_id, vertex_id=vertex_id, user_id=uid))
 
 
-@router.get('/search/roadmaps/{keyword}')
+@router.get(
+    '/search/roadmaps/{keyword}',
+    tags=['roadmaps'])
 async def search_roadmap(keyword: str, uid=Depends(get_user_id)):
     return roadmap_service.search_roadmaps(SearchRoadmapsCommand(user_id=uid, keyword=keyword))
 
 
-@router.get('/home_timeline', response_model=List[Roadmap])
+@router.get(
+    '/home_timeline',
+    tags=['roadmaps'],
+    response_model=List[Roadmap])
 async def get_home_timeline(uid=Depends(get_user_id)):
     return roadmap_service.get_roadmaps_by_newest(
         GetRoadmapsByNewestCommand(user_id=uid)
