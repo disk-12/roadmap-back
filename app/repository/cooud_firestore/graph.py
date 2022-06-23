@@ -61,33 +61,17 @@ class GraphRepository(IGraphRepository):
         # None の項目で上書きしてしまうとデータベース上で Null になってしまう
         new_items = {k: v for k, v in arg.dict().items() if v is not None}
 
-        # array を dict に変換
         if arg.edges is not None:
-            edge_dict: dict = {}
-            for edge in arg.edges:
-                edge_dict[edge.id] = {
-                    EdgeKey.id: edge.id,
-                    EdgeKey.source_id: edge.source_id,
-                    EdgeKey.target_id: edge.target_id,
-                    EdgeKey.is_solid_line: edge.is_solid_line,
-                }
-            new_items[GraphKey.edges] = edge_dict
+            new_items[GraphKey.edges] = self.to_in_vertexes_dict(arg.vertexes)
 
-        # array を dict に変換
         if arg.vertexes is not None:
-            vertex_dict: dict = {}
-            for vertex in arg.vertexes:
-                vertex_dict[vertex.id] = {
-                    VertexKey.id: vertex.id,
-                    VertexKey.x_coordinate: vertex.x_coordinate,
-                    VertexKey.y_coordinate: vertex.y_coordinate
-                }
-            new_items[GraphKey.vertexes] = vertex_dict
+            new_items[GraphKey.vertexes] = dict((edge.id, {**edge.dict()}) for edge in arg.edges)
 
         success = doc_ref.update(new_items)
 
         return success is not None
 
+    # vertex を Firestore 用のオブジェクトに変換
     @staticmethod
     def to_in_vertexes_dict(vertexes: List[Union[BaseVertex, BaseYoutubeVertex, InLinkVertex]]) -> dict:
         # dict に変換

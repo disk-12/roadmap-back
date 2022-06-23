@@ -27,7 +27,7 @@ class UpdateRoadmapRequest(BaseModel):
     title: Union[str, None]
     tags: Union[list, None]
     edges: Union[List[Edge], None]
-    vertexes: Union[List[BaseVertex], None]
+    vertexes: Union[List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]], None]
 
 
 # NOTE:

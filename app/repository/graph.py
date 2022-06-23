@@ -18,7 +18,7 @@ class CreateGraph(BaseModel):
 class UpdateGraph(BaseModel):
     id: str
     edges: Union[List[Edge], None]
-    vertexes: Union[List[BaseVertex], None]
+    vertexes: Union[List[Union[BaseVertex, BaseYoutubeVertex, BaseLinkVertex]], None]
     updated_at: Union[datetime.datetime, None]
 
 
