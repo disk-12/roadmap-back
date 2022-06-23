@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from app.model.edge import Edge
 from app.model.graph import Graph
-from app.model.vertex import Vertex, BaseVertex, BaseYoutubeVertex, BaseLinkVertex
+from app.model.vertex import BaseVertex, BaseYoutubeVertex, BaseLinkVertex
 
 
 class CreateGraph(BaseModel):

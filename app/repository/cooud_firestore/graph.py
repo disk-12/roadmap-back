@@ -3,8 +3,8 @@ from typing import Any, List, Union
 
 from app.model.edge import Edge
 from app.model.graph import GraphKey, Graph
-from app.model.vertex import VertexKey, Vertex, VertexType, InLinkVertex, BaseVertex, BaseYoutubeVertex, YoutubeVertex, \
-    LinkVertex
+from app.model.vertex import VertexKey, Vertex, VertexType, InLinkVertex, BaseVertex, BaseYoutubeVertex, \
+    YoutubeVertex, LinkVertex
 from app.repository.cooud_firestore.model import ModelName
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 
