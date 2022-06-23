@@ -30,7 +30,7 @@ class Roadmap(BaseModel):
     title: str
     favorited: bool
     favorite_count: int
-    tags: list
+    tags: List[str]
     edges: List[Edge]
     vertexes: List[Union[Vertex, LinkVertex, YoutubeVertex]]
     thumbnail: Union[str, None]
