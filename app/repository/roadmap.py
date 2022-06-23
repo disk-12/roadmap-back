@@ -3,17 +3,13 @@ import abc
 from pydantic import BaseModel
 from typing import List, Union
 
-from app.model.edge import Edge
 from app.model.roadmap import Roadmap, RoadmapKey
-from app.model.vertex import Vertex, BaseVertex
 
 
 class CreateRoadmap(BaseModel):
     author_id: str
     title: str
     tags: List[str]
-    edges: List[Edge]
-    vertexes: List[BaseVertex]
     thumbnail: Union[str, None]
 
 
