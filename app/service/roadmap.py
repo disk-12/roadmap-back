@@ -67,8 +67,6 @@ class RoadmapService:
             author_id=command.author_id,
             title=command.title,
             tags=command.tags,
-            edges=command.edges,
-            vertexes=command.vertexes,
             thumbnail=command.thumbnail,
         ))
 
