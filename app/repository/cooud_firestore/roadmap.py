@@ -41,6 +41,12 @@ class RoadmapRepository(IRoadmapRepository):
         if arg.sorted_by is not None:
             query = query.order_by(arg.sorted_by.value)
 
+        if arg.id_filter is not None:
+            if len(arg.id_filter) > 10:
+                raise ValueError("id_filter は 10 以下である必要があります")
+
+            query = query.where(RoadmapKey.id, "in", arg.id_filter)
+
         docs = query.get()
 
         ary = []
