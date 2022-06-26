@@ -12,6 +12,7 @@ from starlette.middleware.gzip import GZipMiddleware
 from app.config import Settings
 from .repository.algolia.roadmap_search import RoadmapSearchRepository
 from .repository.cooud_firestore.graph import GraphRepository
+from .repository.cooud_firestore.recommend import RecommendRepository
 from .repository.cooud_firestore.roadmap import RoadmapRepository
 from .repository.cooud_firestore.user import UserRepository
 from .repository.cooud_firestore.user_achievement import UserAchievementRepository
@@ -79,6 +80,7 @@ user_achievement_repo = UserAchievementRepository(db=db)
 roadmap_repo = RoadmapRepository(db=db)
 roadmap_search_repo = RoadmapSearchRepository(client=client)
 graph_repo = GraphRepository(db=db)
+recommend_repo = RecommendRepository(db=db)
 
 user_service = UserService(user_repo=user_repo)
 user_achievement_service = UserAchievementService(
@@ -94,7 +96,8 @@ roadmap_service = RoadmapService(
     graph_repo=graph_repo,
     user_favorite_repo=user_favorite_repo,
     user_achievement_repo=user_achievement_repo,
-    roadmap_search_repo=roadmap_search_repo
+    roadmap_search_repo=roadmap_search_repo,
+    recommend_repo=recommend_repo
 )
 
 #

@@ -9,7 +9,7 @@ from app.model.edge import Edge
 from app.model.roadmap import Roadmap
 from app.model.vertex import BaseVertex, BaseYoutubeVertex, BaseLinkVertex
 from app.service.roadmap import CreateRoadmapCommand, UpdateRoadmapCommand, GetRoadmapById, \
-    GetRoadmapsByNewestCommand, SearchRoadmapsCommand, GetRoadmapsByFavoritesCommand
+    GetRoadmapsByNewestCommand, SearchRoadmapsCommand, GetRoadmapsByFavoritesCommand, GetRoadmapsByRecommendCommand
 from app.service.user_achievement import GiveAchievementCommand, TakeAchievementCommand
 from app.service.user_favorite import AddFavoriteCommand, DeleteFavoriteCommand
 
@@ -130,6 +130,14 @@ async def search_roadmap(keyword: str, uid=Depends(get_user_id)):
     response_model=List[Roadmap])
 async def get_favorite(uid=Depends(auth_user)):
     return roadmap_service.get_roadmaps_by_favorite(GetRoadmapsByFavoritesCommand(user_id=uid))
+
+
+@router.get(
+    '/recommend/roadmaps',
+    tags=['roadmaps'],
+    response_model=List[Roadmap])
+async def get_home_timeline(uid=Depends(get_user_id)):
+    return roadmap_service.get_roadmaps_by_recommend(GetRoadmapsByRecommendCommand(user_id=uid))
 
 
 @router.get(

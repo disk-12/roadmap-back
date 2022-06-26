@@ -7,6 +7,7 @@ from app.model.roadmap import RoadmapKey, Roadmap
 from app.model.user_achievement import UserAchievement
 from app.model.vertex import Vertex, BaseVertex, BaseYoutubeVertex, BaseLinkVertex
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
+from app.repository.recommend import IRecommendRepository
 from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
 from app.repository.roadmap_search import IRoadmapSearchRepository, SearchRoadmap
 from app.repository.user_achievement import IUserAchievementRepository, FindAllUserAchievements, \
@@ -53,21 +54,29 @@ class SearchRoadmapsCommand(BaseModel):
     user_id: Union[str, None]
 
 
+class GetRoadmapsByRecommendCommand(BaseModel):
+    user_id: Union[str, None]
+
+
 class RoadmapService:
     roadmap_repo: IRoadmapRepository
     graph_repo: IGraphRepository
     user_favorites_repo: IUserFavoriteRepository
     user_achievement_repo: IUserAchievementRepository
     roadmap_search_repo: IRoadmapSearchRepository
+    recommend_repo: IRecommendRepository
 
     def __init__(self, roadmap_repo: IRoadmapRepository, graph_repo: IGraphRepository,
                  user_favorite_repo: IUserFavoriteRepository, user_achievement_repo: IUserAchievementRepository,
-                 roadmap_search_repo: IRoadmapSearchRepository):
+                 roadmap_search_repo: IRoadmapSearchRepository,
+                 recommend_repo: IRecommendRepository,
+                 ):
         self.roadmap_repo = roadmap_repo
         self.graph_repo = graph_repo
         self.user_favorites_repo = user_favorite_repo
         self.user_achievement_repo = user_achievement_repo
         self.roadmap_search_repo = roadmap_search_repo
+        self.recommend_repo = recommend_repo
 
     def create(self, command: CreateRoadmapCommand):
         roadmap_id = self.roadmap_repo.create(CreateRoadmap(
@@ -160,6 +169,12 @@ class RoadmapService:
         sorted_roadmaps = sorted(roadmaps, key=lambda roadmap: roadmap.created_at, reverse=True)
 
         return self.with_roadmaps(user_id=command.user_id, roadmaps=sorted_roadmaps)
+
+    def get_roadmaps_by_recommend(self, command: GetRoadmapsByRecommendCommand):
+        recommend = self.recommend_repo.get_recommends()
+        roadmaps = self.roadmap_repo.get_all(GetAllRoadmap(id_filter=recommend.roadmap_ids))
+
+        return self.with_roadmaps(user_id=command.user_id, roadmaps=roadmaps)
 
     # 各ロードマップお気に入りと実績を追加
     def with_roadmaps(self, user_id: str, roadmaps: List[Roadmap]) -> List[Roadmap]:

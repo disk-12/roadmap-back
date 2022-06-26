@@ -9,3 +9,4 @@ class ModelName(str, Enum):
     vertexes = u'vertexes'
     user_favorites = u'user_favorites'
     user_achievement = u'user_achievements'
+    recommends = u'recommends'
