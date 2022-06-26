@@ -41,6 +41,10 @@ class UpdateRoadmapCommand(BaseModel):
     thumbnail: Union[str, None]
 
 
+class GetRoadmapsByAchievementCommand(BaseModel):
+    user_id: str
+
+
 class GetRoadmapsByFavoritesCommand(BaseModel):
     user_id: str
 
@@ -153,6 +157,20 @@ class RoadmapService:
             GetAllRoadmap(
                 sorted_by=RoadmapKey.created_at,
                 id_filter=user_favorite.roadmap_ids)
+        )
+
+        return self.with_roadmaps(user_id=command.user_id, roadmaps=roadmaps)
+
+    def get_roadmaps_by_achievement(self, command: GetRoadmapsByAchievementCommand):
+        user_achievements = self.user_achievement_repo.get_all_roadmap(
+            FindAllUserAchievements(user_id=command.user_id))
+
+        roadmap_ids = [achievement.roadmap_id for achievement in user_achievements]
+
+        roadmaps = self.roadmap_repo.get_all(
+            GetAllRoadmap(
+                sorted_by=RoadmapKey.created_at,
+                id_filter=roadmap_ids)
         )
 
         return self.with_roadmaps(user_id=command.user_id, roadmaps=roadmaps)
