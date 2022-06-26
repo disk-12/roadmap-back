@@ -40,6 +40,10 @@ class UpdateRoadmapCommand(BaseModel):
     thumbnail: Union[str, None]
 
 
+class GetRoadmapsByFavoritesCommand(BaseModel):
+    user_id: str
+
+
 class GetRoadmapsByNewestCommand(BaseModel):
     user_id: Union[str, None]
 
@@ -129,6 +133,20 @@ class RoadmapService:
         graph_result = self.graph_repo.update(arg=UpdateGraph(**command.dict()))
 
         return roadmap_result is not None and graph_result is not None
+
+    def get_roadmaps_by_favorite(self, command: GetRoadmapsByFavoritesCommand):
+        user_favorite = self.user_favorites_repo.get_by_user_id(FindByUserId(id=command.user_id))
+
+        if user_favorite is None:
+            return []
+
+        roadmaps = self.roadmap_repo.get_all(
+            GetAllRoadmap(
+                sorted_by=RoadmapKey.created_at,
+                id_filter=user_favorite.roadmap_ids)
+        )
+
+        return self.with_roadmaps(user_id=command.user_id, roadmaps=roadmaps)
 
     def get_roadmaps_by_newest(self, command: GetRoadmapsByNewestCommand):
         roadmaps = self.roadmap_repo.get_all(GetAllRoadmap(sorted_by=RoadmapKey.created_at))
