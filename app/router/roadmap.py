@@ -10,7 +10,7 @@ from app.model.roadmap import Roadmap
 from app.model.vertex import BaseVertex, BaseYoutubeVertex, BaseLinkVertex
 from app.service.roadmap import CreateRoadmapCommand, UpdateRoadmapCommand, GetRoadmapById, \
     GetRoadmapsByNewestCommand, SearchRoadmapsCommand, GetRoadmapsByFavoritesCommand, GetRoadmapsByRecommendCommand, \
-    GetRoadmapsByAchievementCommand
+    GetRoadmapsByAchievementCommand, GetRoadmapsByAuthorCommand
 from app.service.user_achievement import GiveAchievementCommand, TakeAchievementCommand
 from app.service.user_favorite import AddFavoriteCommand, DeleteFavoriteCommand
 
@@ -58,6 +58,14 @@ async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(auth_user)):
     ))
 
     return CreateRoadmapResponse(id=roadmap_id)
+
+
+@router.get(
+    '/users/{author_id}/roadmaps',
+    tags=['users'],
+    response_model=List[Roadmap])
+async def show_roadmap(author_id: str, uid=Depends(get_user_id)):
+    return roadmap_service.get_roadmaps_by_author(GetRoadmapsByAuthorCommand(user_id=uid, author_id=author_id))
 
 
 @router.get(
