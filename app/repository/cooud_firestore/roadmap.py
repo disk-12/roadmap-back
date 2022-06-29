@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, List
+from typing import Any, List, Union
 
 from google.cloud import firestore
 
@@ -16,7 +16,7 @@ class RoadmapRepository(IRoadmapRepository):
     def __init__(self, db):
         self.db = db
 
-    def create(self, arg: CreateRoadmap) -> [str, None]:
+    def create(self, arg: CreateRoadmap) -> Union[str, None]:
         doc_ref = self.db.collection(ModelName.roadmaps).document()
         roadmap = doc_ref.set({
             RoadmapKey.id: doc_ref.id,

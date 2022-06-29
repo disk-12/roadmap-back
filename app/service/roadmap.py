@@ -82,7 +82,7 @@ class RoadmapService:
         self.roadmap_search_repo = roadmap_search_repo
         self.recommend_repo = recommend_repo
 
-    def create(self, command: CreateRoadmapCommand):
+    def create(self, command: CreateRoadmapCommand) -> Union[str, None]:
         roadmap_id = self.roadmap_repo.create(CreateRoadmap(
             author_id=command.author_id,
             title=command.title,
@@ -98,6 +98,8 @@ class RoadmapService:
             id=roadmap_id,
             **command.dict()
         ))
+
+        return roadmap_id
 
     def get_by_id(self, command: GetRoadmapById):
         roadmap = self.roadmap_repo.get_by_id(command.roadmap_id)

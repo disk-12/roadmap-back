@@ -26,6 +26,10 @@ class CreateRoadmapRequest(BaseModel):
     thumbnail: Union[str, None]
 
 
+class CreateRoadmapResponse(BaseModel):
+    id: Union[str, None]
+
+
 class UpdateRoadmapRequest(BaseModel):
     title: Union[str, None]
     tags: Union[list, None]
@@ -40,10 +44,10 @@ class UpdateRoadmapRequest(BaseModel):
 @router.post('/roadmaps',
              tags=['roadmaps'],
              status_code=status.HTTP_201_CREATED,
-             response_class=Response)
+             response_model=CreateRoadmapResponse)
 async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(auth_user)):
     # TODO(k-shir0): エラーハンドリング
-    roadmap_service.create(CreateRoadmapCommand(
+    roadmap_id = roadmap_service.create(CreateRoadmapCommand(
         author_id=uid,
         title=req.title,
         tags=req.tags,
@@ -52,6 +56,8 @@ async def create_roadmap(req: CreateRoadmapRequest, uid=Depends(auth_user)):
         locked=req.locked,
         thumbnail=req.thumbnail,
     ))
+
+    return CreateRoadmapResponse(id=roadmap_id)
 
 
 @router.get(
