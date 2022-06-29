@@ -77,13 +77,13 @@ class RoadmapRepository(IRoadmapRepository):
 
     @staticmethod
     def dict_to_roadmap(roadmap_dict: dict) -> Roadmap:
-        return Roadmap.from_dict({
+        return Roadmap(
             **roadmap_dict,
-            RoadmapKey.favorited: False,
-            RoadmapKey.edges: [],
-            RoadmapKey.vertexes: [],
-            RoadmapKey.achievement: None,
-        })
+            favorited=False,
+            edges=[],
+            vertexes=[],
+            achievement=None,
+        )
 
     def update_favorite_count(self, arg: UpdateRoadmapFavoriteCount) -> bool:
         doc_ref = self.db.collection(ModelName.roadmaps).document(arg.id)

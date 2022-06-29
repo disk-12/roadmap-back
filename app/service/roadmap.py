@@ -133,7 +133,7 @@ class RoadmapService:
 
                 vertexes = new_vertexes
 
-        roadmap_graph = Roadmap.from_dict({
+        roadmap_graph = roadmap.copy(update={
             **roadmap.dict(),
             RoadmapKey.favorited: favorite,
             RoadmapKey.vertexes: vertexes,
@@ -231,7 +231,7 @@ class RoadmapService:
             favorite = roadmap.id in favorite_roadmap_ids
             achievement = next((x for x in user_achievements if x.roadmap_id == roadmap.id), None)
 
-            new_roadmaps.append(Roadmap.from_dict({
+            new_roadmaps.append(roadmap.copy(update={
                 **roadmap.dict(),
                 RoadmapKey.favorited: favorite,
                 RoadmapKey.achievement: achievement,
