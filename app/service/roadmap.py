@@ -62,6 +62,11 @@ class GetRoadmapsByRecommendCommand(BaseModel):
     user_id: Union[str, None]
 
 
+class GetRoadmapsByAuthorCommand(BaseModel):
+    user_id: Union[str, None]
+    author_id: str
+
+
 class RoadmapService:
     roadmap_repo: IRoadmapRepository
     graph_repo: IGraphRepository
@@ -179,6 +184,15 @@ class RoadmapService:
 
     def get_roadmaps_by_newest(self, command: GetRoadmapsByNewestCommand):
         roadmaps = self.roadmap_repo.get_all(GetAllRoadmap(sorted_by=RoadmapKey.created_at))
+
+        return self.with_roadmaps(user_id=command.user_id, roadmaps=roadmaps)
+
+    def get_roadmaps_by_author(self, command=GetRoadmapsByAuthorCommand):
+        roadmaps = self.roadmap_repo.get_all(
+            GetAllRoadmap(
+                sorted_by=RoadmapKey.created_at,
+                author_id=command.author_id)
+        )
 
         return self.with_roadmaps(user_id=command.user_id, roadmaps=roadmaps)
 

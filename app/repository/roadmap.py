@@ -17,6 +17,7 @@ class CreateRoadmap(BaseModel):
 class GetAllRoadmap(BaseModel):
     sorted_by: Union[RoadmapKey, None]
     id_filter: Union[List[str], None]
+    author_id: Union[str, None]
 
 
 class UpdateRoadmap(BaseModel):

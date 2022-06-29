@@ -47,6 +47,9 @@ class RoadmapRepository(IRoadmapRepository):
 
             query = query.where(RoadmapKey.id, "in", arg.id_filter)
 
+        if arg.author_id is not None:
+            query = query.where(RoadmapKey.author_id, "==", arg.author_id)
+
         docs = query.get()
 
         ary = []
