@@ -22,13 +22,13 @@ class RoadmapSearchRepository(IRoadmapSearchRepository):
         ary = []
         for hit in hits:
             ary.append(
-                Roadmap.from_dict({
+                Roadmap(
                     **hit,
-                    RoadmapKey.favorited: False,
-                    RoadmapKey.edges: [],
-                    RoadmapKey.vertexes: [],
-                    RoadmapKey.achievement: None,
-                })
+                    favorited=False,
+                    edges=[],
+                    vertexes=[],
+                    achievement=None,
+                )
             )
 
         return ary

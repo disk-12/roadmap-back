@@ -39,21 +39,3 @@ class Roadmap(BaseModel):
     achievement: Union[UserAchievement, None]
     created_at: datetime.datetime
     updated_at: datetime.datetime
-
-    @staticmethod
-    def from_dict(source):
-        return Roadmap(
-            id=source[RoadmapKey.id],
-            author_id=source[RoadmapKey.author_id],
-            title=source[RoadmapKey.title],
-            favorited=source[RoadmapKey.favorited],
-            favorite_count=source[RoadmapKey.favorite_count],
-            tags=source[RoadmapKey.tags],
-            edges=source[RoadmapKey.edges],
-            vertexes=source[RoadmapKey.vertexes],
-            locked=source[RoadmapKey.locked],
-            thumbnail=source[RoadmapKey.thumbnail],
-            achievement=source[RoadmapKey.achievement],
-            created_at=source[RoadmapKey.created_at],
-            updated_at=source[RoadmapKey.updated_at]
-        )
