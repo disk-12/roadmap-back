@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from app.model.edge import Edge
 from app.model.roadmap import RoadmapKey, Roadmap
 from app.model.user_achievement import UserAchievement
-from app.model.vertex import Vertex, BaseVertex, BaseYoutubeVertex, BaseLinkVertex
+from app.model.vertex import Vertex, BaseVertex, BaseYoutubeVertex, BaseLinkVertex, VertexType
 from app.repository.graph import IGraphRepository, UpdateGraph, CreateGraph
 from app.repository.recommend import IRecommendRepository
 from app.repository.roadmap import IRoadmapRepository, CreateRoadmap, UpdateRoadmap, GetAllRoadmap
@@ -122,14 +122,15 @@ class RoadmapService:
 
             # 実績一覧
             achievement = self.user_achievement_repo.get_by_roadmap_id(
-                FindUserAchievementByRoadmapId(roadmap_id=roadmap.id, user_id=command.user_id))
+                FindUserAchievementByRoadmapId(user_id=command.user_id, roadmap_id=command.roadmap_id))
 
             if achievement is not None:
                 # 各 Vertex に Achieved かセットする
                 new_vertexes = []
                 for vertex in vertexes:
-                    achieved = vertex.id in achievement.vertex_ids
-                    new_vertexes.append(Vertex(**vertex.dict(), achieved=achieved))
+                    vertex.achieved = vertex.id in achievement.vertex_ids
+                    new_vertexes.append(vertex)
+
                 vertexes = new_vertexes
 
         roadmap_graph = Roadmap.from_dict({
