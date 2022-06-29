@@ -71,33 +71,11 @@ class YoutubeVertex(Vertex, BaseYoutubeVertex):
 class BaseLinkVertex(BaseVertex):
     type: Literal[VertexType.link]
     link: str
-
-
-# NOTE:
-# Firestore に入れるためだけの型
-class InLinkVertex(BaseLinkVertex):
     ogp_url: Union[str, None]
     ogp_title: Union[str, None]
     ogp_description: Union[str, None]
     ogp_site_name: Union[str, None]
     ogp_image: Union[str, None]
-
-    @staticmethod
-    def from_dict(source: dict):
-        return InLinkVertex(
-            id=source[VertexKey.id],
-            type=source[VertexKey.type],
-            x_coordinate=source[VertexKey.x_coordinate],
-            y_coordinate=source[VertexKey.y_coordinate],
-            title=source[VertexKey.title],
-            content=source[VertexKey.content],
-            link=source[VertexKey.link],
-            ogp_url=source[VertexKey.ogp_url],
-            ogp_title=source[VertexKey.ogp_title],
-            ogp_description=source[VertexKey.ogp_description],
-            ogp_site_name=source[VertexKey.ogp_site_name],
-            ogp_image=source[VertexKey.ogp_image],
-        )
 
 
 class LinkVertex(Vertex, BaseLinkVertex):
